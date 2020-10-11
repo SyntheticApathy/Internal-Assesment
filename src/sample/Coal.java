@@ -9,14 +9,16 @@ import static sample.Main.HEIGHT;
 import static sample.Main.WIDTH;
 
 public class Coal extends Resource {
-    Color color = new Color(0, 0, 0, 1);
+    Color color;
+
+    static {
+        new Color(0, 0, 0, 1);
+    }
 
     public Coal(Color color) throws Exception {
         super(calculateDepth(), setWidth(), setHeight());
         this.color = color;
-        System.out.println(calculateDepth());
-        System.out.println(setHeight());
-        System.out.println(setWidth());
+
     }
 
     private static double calculateDepth() {
@@ -37,18 +39,17 @@ public class Coal extends Resource {
     public static List<Integer> createCoordinates(int x) {
         List<Integer> coordinates = new ArrayList<>();
         int end = (int) (Math.random() * 20);
-        if (end == 0){
+        if (end == 0) {
             end = (int) (Math.random() * 20);
         }
-        int endOfCoal = (int) (Math.random() * (x- end));
+        int endOfCoal = (int) (Math.random() * (x - end));
 
-
+        System.out.println(x+ " " + coordinates);
         for (int i = 0; i < end; i++) {
             coordinates.add(endOfCoal);
             endOfCoal--;
         }
-        System.out.println("aa" + x);
-        System.out.println("test" + " " + coordinates);
+
         return coordinates;
     }
 }
