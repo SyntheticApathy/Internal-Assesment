@@ -16,7 +16,7 @@ public class Main extends Application {
     static final int WIDTH = 550;
     static final int HEIGHT = 600;
     static OverWorld world = new OverWorld();
-    int i = 4;
+
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -24,14 +24,7 @@ public class Main extends Application {
 
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(25), e -> {
             print(primaryStage, world);
-            PlayerAction.init();
-            while (i > 0) {
-                for (int j = 0; j < world.coordinates().size(); j++) {
 
-                }
-                world.coordinates();
-                System.out.println(world.resources);
-            }
 
         }));
         tl.setCycleCount(Animation.INDEFINITE);
@@ -43,6 +36,7 @@ public class Main extends Application {
         AnchorPane root = new AnchorPane();
         primaryStage.setScene(new Scene(root, WIDTH, HEIGHT));
 
+        System.out.println(world.coordinates());
 
         Rectangle rectangle = new Rectangle(player.xCoordinate, player.yCoordinate, 5, 5);
 
