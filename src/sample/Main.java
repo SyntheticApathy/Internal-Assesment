@@ -23,7 +23,7 @@ public class Main extends Application {
         primaryStage.show();
 
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(25), e -> {
-            print(primaryStage, world);
+            print(primaryStage);
 
 
         }));
@@ -32,11 +32,10 @@ public class Main extends Application {
 
     }
 
-    private void print(Stage primaryStage, OverWorld world) {
+    private void print(Stage primaryStage) {
         AnchorPane root = new AnchorPane();
         primaryStage.setScene(new Scene(root, WIDTH, HEIGHT));
 
-        System.out.println(world.coordinates());
 
         Rectangle rectangle = new Rectangle(player.xCoordinate, player.yCoordinate, 5, 5);
 
