@@ -43,7 +43,7 @@ public class Coal extends Resource {
             end = (int) (Math.random() * 20);
         }
         int endOfCoal = (int) (Math.random() * (x - end));
-
+        System.out.println("you got here");
         System.out.println(x+ " " + coordinates);
         for (int i = 0; i < end; i++) {
             coordinates.add(endOfCoal);
