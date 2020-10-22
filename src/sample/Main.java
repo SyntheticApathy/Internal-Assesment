@@ -1,49 +1,70 @@
 package sample;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.control.Button;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-
-import static sample.OverWorld.player;
 
 public class Main extends Application {
-    static final int WIDTH = 550;
-    static final int HEIGHT = 600;
-    static OverWorld world = new OverWorld();
 
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        primaryStage.show();
+    public void start(Stage primaryStage) {
+        homeScreen(primaryStage);
 
-        Timeline tl = new Timeline(new KeyFrame(Duration.millis(25), e -> {
-            print(primaryStage);
-
-
-        }));
-        tl.setCycleCount(Animation.INDEFINITE);
-        tl.play();
 
     }
 
-    private void print(Stage primaryStage) {
-        AnchorPane root = new AnchorPane();
-        primaryStage.setScene(new Scene(root, WIDTH, HEIGHT));
+    private void homeScreen(Stage stage) {
+        GridPane root = new GridPane();
+        root.setAlignment(Pos.CENTER);
+        root.setVgap(10);
+        root.setHgap(20);
+
+        Text text = new Text("Placeholder");        /* TODO: 10/22/2020 rewrite texts && buttons */
+        root.add(text, 0, 0);
 
 
-        Rectangle rectangle = new Rectangle(player.xCoordinate, player.yCoordinate, 5, 5);
+        Button button1 = new Button("Placeholder");
+        button1.setOnAction(event -> {
+            System.out.println("test");
+            createNewGameMenu();
+            stage.close();
+        });
+        root.add(button1, 1, 1);
 
-        rectangle.setFill(player.getColor());
 
-        root.getChildren().addAll(rectangle);
+        stage.setScene(new Scene(root, 1200, 800));
+        stage.show();
+    }
 
+    private void createNewGameMenu() {
+        Stage stage = new Stage();
 
+        /* TODO: 10/22/2020  create sliders and general game creation gui */
+
+        GridPane root = new GridPane();
+        root.setAlignment(Pos.CENTER);
+        root.setVgap(10);
+        root.setHgap(20);
+
+        Text text = new Text("Placeholder");
+        root.add(text, 0, 0);
+
+        Button button = new Button("Placerholder");
+        button.setOnAction(event -> {
+            System.out.println("test1");
+            GameGUI.init(); /* TODO: 10/22/2020 into constructor put everything that comes from the sliders */
+            stage.close();
+        });
+
+        root.add(button, 1, 1);
+
+        stage.setScene(new Scene(root, 1200, 800));
+        stage.show();
     }
 
 
