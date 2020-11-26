@@ -24,11 +24,7 @@ public class Main extends Application {
         root.setVgap(10);
         root.setHgap(20);
 
-        Text text = new Text("Placeholder");        /* TODO: 10/22/2020 rewrite texts && buttons */
-        root.add(text, 0, 0);
-
-
-        Button button1 = new Button("Placeholder");
+        Button button1 = new Button("Create new Map");
         button1.setOnAction(event -> {
             System.out.println("test");
             createNewGameMenu();
