@@ -10,11 +10,10 @@ import sample.logicalmap.*;
 
 
 public class GameGUI {
-    final static int numberOfTrees = 70;
     final static int width = 1200;
     final static int height = 800;
 
-    public static void init() {
+    public static void init(int numberOfTrees) {
         Stage stage = new Stage();
         AnchorPane root = new AnchorPane();
         Scene scene = new Scene(root, width, height);
@@ -27,20 +26,20 @@ public class GameGUI {
 
 
         /* Adding Trees onto GUI from Logical Map */
-        LogicalMap lm = new LogicalMapCreator().createLogicalMap(numberOfTrees, width/5, height/5);
+        LogicalMap lm = new LogicalMapCreator().createLogicalMap(numberOfTrees, width / 5, height / 5);
 
         Position[][] positions = lm.getPositions();
         for (int i = 0; i < positions.length; i++) {
             for (int j = 0; j < positions[i].length; j++) {
-                displayPosition(i, j , positions[i][j], root);
+                displayPosition(i, j, positions[i][j], root);
             }
         }
 
 
-
         stage.setScene(scene);
 
-        /* General Movement Of Character */
+        /* General Movement Of Character */ // do I want this? we can make the character a literal
+                                            // building or smth and just leave it.
         scene.setOnKeyPressed(e -> {
 
             /* Movement Up */
@@ -87,16 +86,16 @@ public class GameGUI {
     }
 
     private static void displayPosition(int i, int j, Position position, AnchorPane root) {
-        if(position.hasObstacle()) {
+        if (position.hasObstacle()) {
             Obstacle obstacle = position.getObstacle();
-            displayObstacle(i, j , obstacle, root);
+            displayObstacle(i, j, obstacle, root);
         } else {
             //do nothing
         }
     }
 
     private static void displayObstacle(int i, int j, Obstacle obstacle, AnchorPane root) {
-        if(obstacle instanceof Tree) {
+        if (obstacle instanceof Tree) {
             displayTree(i, j, (Tree) obstacle, root);
         } else if (obstacle instanceof Turret) {
             displayTurret(i, j, (Turret) obstacle, root);
@@ -120,7 +119,7 @@ public class GameGUI {
     }
 
     private static int translatePositionCoordinateIntoGUI(int i) {
-        return i*5;
+        return i * 5;
     }
 
 
