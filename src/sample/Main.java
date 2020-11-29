@@ -3,11 +3,15 @@ package sample;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class Main extends Application {
 
@@ -25,6 +29,7 @@ public class Main extends Application {
         root.setVgap(10);
         root.setHgap(20);
 
+
         Button button1 = new Button("New Game");
         button1.setOnAction(event -> {
             createNewGameMenu();
@@ -33,18 +38,18 @@ public class Main extends Application {
         root.add(button1, 1, 1);
         Button loadGameButton = new Button("Load Game");
         loadGameButton.setOnAction(e -> {
-            // TODO: 11/26/2020 connect with SQL database
+            // TODO: 11/26/2020 connect with SQL database and load game
         });
 
-        stage.setScene(new Scene(root, 1200, 800));
+        stage.setScene(new Scene(root, 1200, 800, Color.RED));
         stage.show();
     }
 
     private void createNewGameMenu() {
+        final boolean[] flag = {true};
+
 
         Stage stage = new Stage();
-
-        /* TODO: 10/22/2020  create sliderPlaceholders and general game creation gui */
 
         GridPane root = new GridPane();
         root.setAlignment(Pos.CENTER);
@@ -60,13 +65,56 @@ public class Main extends Application {
 
             /* checking if Number of Trees is valid */
             if (numberOfTreesTextfield.getText().isEmpty() || !stringIsInt(numberOfTreesTextfield.getText())) {
-                throw new IllegalArgumentException();
-            }
-            int numberOfTrees = Integer.parseInt(numberOfTreesTextfield.getText());
-            ;
+                /*  Error Message  */
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Something went wrong");
+                alert.setContentText("Try again, if this error persists, copy the below error and contact our customer service");
 
-            stage.close();
-            GameGUI.init(numberOfTrees);
+                Exception ex = new IllegalArgumentException("Illegal Argument Exception");
+
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                ex.printStackTrace(pw);
+                String exceptiontext = sw.toString();
+
+                Label label = new Label("Error:");
+
+                TextArea textArea = new TextArea(exceptiontext);
+                textArea.setEditable(false);
+                textArea.setWrapText(true);
+
+                textArea.setMaxWidth(Double.MAX_VALUE);
+                textArea.setMaxHeight(Double.MAX_VALUE);
+                GridPane.setVgrow(textArea, Priority.ALWAYS);
+                GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+                GridPane expContent = new GridPane();
+                expContent.setMaxWidth(Double.MAX_VALUE);
+                expContent.add(label, 0, 0);
+                expContent.add(textArea, 0, 1);
+
+                alert.getDialogPane().setExpandableContent(expContent);
+                alert.showAndWait();
+
+                createNewGameMenu();
+                stage.close();
+            } else {
+                if (Long.parseLong(numberOfTreesTextfield.getText()) >= ((GameGUI.height / 5) * (GameGUI.width / 5)) / 4.5) {
+                    flag[0] = !flag[0];
+                    Alert tooBigOfANumberAlert = new Alert(Alert.AlertType.ERROR);
+                    tooBigOfANumberAlert.setTitle("Number Error");
+                    tooBigOfANumberAlert.setHeaderText("The number you entered was too large");
+                    tooBigOfANumberAlert.setContentText("We reccomend entering a smaller number :)");
+
+                    tooBigOfANumberAlert.showAndWait();
+                    createNewGameMenu();
+                    stage.close();
+                }
+                if (flag[0]) {
+                    GameGUI.init(Integer.parseInt(numberOfTreesTextfield.getText()));
+                    stage.close();
+                }
+            }
 
         });
 
@@ -80,13 +128,14 @@ public class Main extends Application {
         stage.show();
     }
 
+
     private boolean stringIsInt(String str) {
         String regex = "^\\d+$";
         return str.matches(regex);
     }
 
 
-    public static void main(String[] args) {
-        launch(args);
+    public static void main(String[] uwu) {
+        launch(uwu);
     }
 }
