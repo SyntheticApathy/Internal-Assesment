@@ -13,7 +13,7 @@ public class GameGUI {
     final static int width = 1200;
     final static int height = 800;
 
-    public static void init(int numberOfTrees) {
+    public static void init(int numberOfTrees, int numberOfBoulders) {
         Stage stage = new Stage();
         AnchorPane root = new AnchorPane();
         Scene scene = new Scene(root, width, height);
@@ -26,7 +26,7 @@ public class GameGUI {
 
 
         /* Adding Trees onto GUI from Logical Map */
-        LogicalMap lm = new LogicalMapCreator().createLogicalMap(numberOfTrees, width / 5, height / 5);
+        LogicalMap lm = new LogicalMapCreator().createLogicalMap(numberOfTrees, numberOfBoulders, width / 5, height / 5);
 
         Position[][] positions = lm.getPositions();
         for (int i = 0; i < positions.length; i++) {
@@ -39,7 +39,7 @@ public class GameGUI {
         stage.setScene(scene);
 
         /* General Movement Of Character */ // do I want this? we can make the character a literal
-                                            // building or smth and just leave it.
+        // building or smth and just leave it.
         scene.setOnKeyPressed(e -> {
 
             /* Movement Up */
@@ -99,7 +99,17 @@ public class GameGUI {
             displayTree(i, j, (Tree) obstacle, root);
         } else if (obstacle instanceof Turret) {
             displayTurret(i, j, (Turret) obstacle, root);
+        } else if (obstacle instanceof Boulder) {
+            displayBoulder(i, j, (Boulder) obstacle, root);
         }
+    }
+
+    private static void displayBoulder(int i, int j, Boulder obstacle, AnchorPane root) {
+        int x = translatePositionCoordinateIntoGUI(i);
+        int y = translatePositionCoordinateIntoGUI(j);
+        Rectangle boulder = new Rectangle(x, y, 5, 5);  // TODO: 11/26/2020  this needs to be the turret (pic)
+        boulder.setFill(Color.DARKGRAY);
+        root.getChildren().add(boulder);
     }
 
     private static void displayTurret(int i, int j, Turret obstacle, AnchorPane root) {

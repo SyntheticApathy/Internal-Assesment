@@ -6,15 +6,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class LogicalMapCreator {
-    public LogicalMap createLogicalMap(int numberOfTrees, int width, int height) {
+    public LogicalMap createLogicalMap(int numberOfTrees, int numberOfBoulders, int width, int height) {
         LogicalMap logicalMap = new LogicalMap(width, height);
 
         Set<Pair<Integer, Integer>> turretCoordinates = new HashSet<>() {{
-            double coeficient = 0.45;
-            add(new Pair<>((int) Math.round(coeficient * width), (int) Math.round(coeficient * height)));
-            add(new Pair<>((int) Math.round(coeficient * width), (int) Math.round((1-coeficient) * height)));
-            add(new Pair<>((int) Math.round((1-coeficient) * width), (int) Math.round(coeficient * height)));
-            add(new Pair<>((int) Math.round((1-coeficient) * width), (int) Math.round((1-coeficient) * height)));
+            double coefficient = 0.45;
+            add(new Pair<>((int) Math.round(coefficient * width), (int) Math.round(coefficient * height)));
+            add(new Pair<>((int) Math.round(coefficient * width), (int) Math.round((1 - coefficient) * height)));
+            add(new Pair<>((int) Math.round((1 - coefficient) * width), (int) Math.round(coefficient * height)));
+            add(new Pair<>((int) Math.round((1 - coefficient) * width), (int) Math.round((1 - coefficient) * height)));
 
         }};
         putTurretsOnLogicalMap(turretCoordinates, logicalMap);
@@ -24,14 +24,24 @@ public class LogicalMapCreator {
         illegalLocations.add(logicalMap.getMiddle());
 
         putTreesOnLogicalMap(selectRandomCoordinates(numberOfTrees, width, height), logicalMap, illegalLocations);
+        putBouldersOnLogicalMap(selectRandomCoordinates(numberOfBoulders, width, height), logicalMap, illegalLocations);
         return logicalMap;
     }
 
     public void putTreesOnLogicalMap(Set<Pair<Integer, Integer>> coordinates, LogicalMap logicalMap, Set<Pair<Integer, Integer>> illegalLocations) {
         Position[][] positions = logicalMap.getPositions();
         for (Pair<Integer, Integer> coordinate : coordinates) {
-            if(! illegalLocations.contains(coordinate)) { //change later, move illegalLocations to selectRandomCoordinates
+            if (!illegalLocations.contains(coordinate)) { //change later, move illegalLocations to selectRandomCoordinates
                 positions[coordinate.getKey()][coordinate.getValue()].setObstacle(new Tree());
+            }
+        }
+    }
+
+    public void putBouldersOnLogicalMap(Set<Pair<Integer, Integer>> coordinates, LogicalMap logicalMap, Set<Pair<Integer, Integer>> illegalLocations) {
+        Position[][] positions = logicalMap.getPositions();
+        for (Pair<Integer, Integer> coordinate : coordinates) {
+            if (!illegalLocations.contains(coordinate)) { //change later, move illegalLocations to selectRandomCoordinates
+                positions[coordinate.getKey()][coordinate.getValue()].setObstacle(new Boulder());
             }
         }
     }

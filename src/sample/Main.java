@@ -1,11 +1,11 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -26,51 +26,70 @@ public class Main extends Application {
     private void homeScreen(Stage stage) {
         GridPane root = new GridPane();
         root.setAlignment(Pos.CENTER);
-        root.setVgap(10);
+        root.setVgap(100);
         root.setHgap(20);
+        stage.setTitle("Game-io");
+
+        BackgroundFill bf = new BackgroundFill(Color.PEACHPUFF, CornerRadii.EMPTY, Insets.EMPTY);
+        root.setBackground(new Background(bf));
+
+        Text welcomeText = new Text("WELCOME!");
+        welcomeText.setFill(Color.BLACK);
+        welcomeText.setStyle("-fx-font: 30 arial");
 
 
-        Button button1 = new Button("New Game");
-        button1.setOnAction(event -> {
+        Button newGameButton = new Button("New Game");
+        newGameButton.setOnAction(event -> {
             createNewGameMenu();
             stage.close();
         });
-        root.add(button1, 1, 1);
+
         Button loadGameButton = new Button("Load Game");
         loadGameButton.setOnAction(e -> {
             // TODO: 11/26/2020 connect with SQL database and load game
         });
+
+        root.add(welcomeText, 2, 0);
+        root.add(newGameButton, 1, 1);
+        root.add(loadGameButton, 3, 1);
 
         stage.setScene(new Scene(root, 1200, 800, Color.RED));
         stage.show();
     }
 
     private void createNewGameMenu() {
-        final boolean[] flag = {true};
+        final int[] flag = {0};
 
 
         Stage stage = new Stage();
+        stage.setTitle("Create new Game");
 
         GridPane root = new GridPane();
         root.setAlignment(Pos.CENTER);
         root.setVgap(10);
         root.setHgap(20);
 
+        BackgroundFill bf = new BackgroundFill(Color.PEACHPUFF, CornerRadii.EMPTY, Insets.EMPTY);
+        root.setBackground(new Background(bf));
+
         Text numberOfTreesText = new Text("Amount of Trees To Be On Map : ");
         TextField numberOfTreesTextfield = new TextField("Enter Number Here");
+
+        Text numberOfBouldersText = new Text("Amount of Boulders To Be On Map : ");
+        TextField numberOfBouldersTextfield = new TextField("Enter Number Here");
 
 
         Button button = new Button("Create new World");
         button.setOnAction(event -> {
+            /* check if Number of Trees is valid */
 
-            /* checking if Number of Trees is valid */
-            if (numberOfTreesTextfield.getText().isEmpty() || !stringIsInt(numberOfTreesTextfield.getText())) {
+            if (numberOfTreesTextfield.getText().isEmpty() || !stringIsInt(numberOfTreesTextfield.getText()) || numberOfBouldersTextfield.getText().isEmpty() || !stringIsInt(numberOfBouldersTextfield.getText())) {
                 /*  Error Message  */
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Something went wrong");
                 alert.setContentText("Try again, if this error persists, copy the below error and contact our customer service");
 
-                Exception ex = new IllegalArgumentException("Illegal Argument Exception");
+                Exception ex = new IllegalArgumentException("Illegal Argument Exception"); /* This is shown to the client */
 
                 StringWriter sw = new StringWriter();
                 PrintWriter pw = new PrintWriter(sw);
@@ -96,22 +115,20 @@ public class Main extends Application {
                 alert.getDialogPane().setExpandableContent(expContent);
                 alert.showAndWait();
 
-                createNewGameMenu();
-                stage.close();
+                numberOfBouldersTextfield.setText("");
+                numberOfTreesTextfield.setText("");
             } else {
-                if (Long.parseLong(numberOfTreesTextfield.getText()) >= ((GameGUI.height / 5) * (GameGUI.width / 5)) / 4.5) {
-                    flag[0] = !flag[0];
+                if (Long.parseLong(numberOfTreesTextfield.getText()) + Long.parseLong(numberOfBouldersTextfield.getText()) >= ((GameGUI.height / 5) * (GameGUI.width / 5)) / 4.5) {
                     Alert tooBigOfANumberAlert = new Alert(Alert.AlertType.ERROR);
                     tooBigOfANumberAlert.setTitle("Number Error");
                     tooBigOfANumberAlert.setHeaderText("The number you entered was too large");
                     tooBigOfANumberAlert.setContentText("We reccomend entering a smaller number :)");
-
                     tooBigOfANumberAlert.showAndWait();
-                    createNewGameMenu();
-                    stage.close();
-                }
-                if (flag[0]) {
-                    GameGUI.init(Integer.parseInt(numberOfTreesTextfield.getText()));
+
+                    numberOfBouldersTextfield.setText("");
+                    numberOfTreesTextfield.setText("");
+                } else {
+                    GameGUI.init(Integer.parseInt(numberOfTreesTextfield.getText()), Integer.parseInt(numberOfBouldersTextfield.getText()));
                     stage.close();
                 }
             }
@@ -119,9 +136,12 @@ public class Main extends Application {
         });
 
 
+
         root.add(numberOfTreesText, 1, 1);
         root.add(numberOfTreesTextfield, 2, 1);
 
+        root.add(numberOfBouldersText, 1, 2);
+        root.add(numberOfBouldersTextfield, 2, 2);
 
         root.add(button, 5, 5);
         stage.setScene(new Scene(root, 1200, 800));
