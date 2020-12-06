@@ -81,7 +81,7 @@ public class Main extends Application {
 
         Button button = new Button("Create new World");
         button.setOnAction(event -> {
-            /* check if Number of Trees is valid */
+            /* check if Number of Trees && Number of Boulders is valid */
 
             if (numberOfTreesTextfield.getText().isEmpty() || !stringIsInt(numberOfTreesTextfield.getText()) || numberOfBouldersTextfield.getText().isEmpty() || !stringIsInt(numberOfBouldersTextfield.getText())) {
                 /*  Error Message  */
@@ -107,12 +107,12 @@ public class Main extends Application {
                 GridPane.setVgrow(textArea, Priority.ALWAYS);
                 GridPane.setHgrow(textArea, Priority.ALWAYS);
 
-                GridPane expContent = new GridPane();
-                expContent.setMaxWidth(Double.MAX_VALUE);
-                expContent.add(label, 0, 0);
-                expContent.add(textArea, 0, 1);
+                GridPane gridPane = new GridPane();
+                gridPane.setMaxWidth(Double.MAX_VALUE);
+                gridPane.add(label, 0, 0);
+                gridPane.add(textArea, 0, 1);
 
-                alert.getDialogPane().setExpandableContent(expContent);
+                alert.getDialogPane().setExpandableContent(gridPane);
                 alert.showAndWait();
 
                 numberOfBouldersTextfield.setText("");
@@ -121,8 +121,8 @@ public class Main extends Application {
                 if (Long.parseLong(numberOfTreesTextfield.getText()) + Long.parseLong(numberOfBouldersTextfield.getText()) >= ((GameGUI.height / 5) * (GameGUI.width / 5)) / 4.5) {
                     Alert tooBigOfANumberAlert = new Alert(Alert.AlertType.ERROR);
                     tooBigOfANumberAlert.setTitle("Number Error");
-                    tooBigOfANumberAlert.setHeaderText("The number you entered was too large");
-                    tooBigOfANumberAlert.setContentText("We reccomend entering a smaller number :)");
+                    tooBigOfANumberAlert.setHeaderText("The number(s) you entered was too large");
+                    tooBigOfANumberAlert.setContentText("We reccomend entering a smaller number(s)");
                     tooBigOfANumberAlert.showAndWait();
 
                     numberOfBouldersTextfield.setText("");

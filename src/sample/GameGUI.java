@@ -1,7 +1,6 @@
 package sample;
 
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -10,23 +9,27 @@ import sample.logicalmap.*;
 
 
 public class GameGUI {
-    final static int width = 1200;
-    final static int height = 800;
+    final static int width = 600;
+    final static int height = 400;
 
     public static void init(int numberOfTrees, int numberOfBoulders) {
         Stage stage = new Stage();
         AnchorPane root = new AnchorPane();
         Scene scene = new Scene(root, width, height);
 
+
+
+
         /* Adding Character */
         // TODO: 11/24/2020 add character
-        Rectangle character = new Rectangle(600, 400, 5, 5);
+        Rectangle character = new Rectangle(width / 2, height / 2, 5, 5);
         character.setFill(Color.RED);
         root.getChildren().add(character);
 
 
-        /* Adding Trees onto GUI from Logical Map */
-        LogicalMap lm = new LogicalMapCreator().createLogicalMap(numberOfTrees, numberOfBoulders, width / 5, height / 5);
+        /* Adding Trees / Boulder / Enemies (testing) onto GUI from Logical Map */
+        int numberOfEnemies = 10; // TODO: 12/6/2020 change this so that it depends on what round it is in, this is just a quick switch
+        LogicalMap lm = new LogicalMapCreator().createLogicalMap(numberOfTrees, numberOfBoulders, numberOfEnemies, width / 5, height / 5);
 
         Position[][] positions = lm.getPositions();
         for (int i = 0; i < positions.length; i++) {
@@ -35,53 +38,51 @@ public class GameGUI {
             }
         }
 
-
         stage.setScene(scene);
-
-        /* General Movement Of Character */ // do I want this? we can make the character a literal
-        // building or smth and just leave it.
-        scene.setOnKeyPressed(e -> {
-
-            /* Movement Up */
-            if (e.getCode() == KeyCode.W || e.getCode() == KeyCode.UP) {
-                if (character.getY() - 5 <= 0) {
-                    character.setY(height - character.getHeight());  /* spawn character on other side of map,
-                                                              needs to have enough space so
-                                                              the character doesn't clip out*/
-                }
-
-                character.setY(character.getY() - 5);
-            }
-            /* Movement to the Right */
-            if (e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT) {
-                if (character.getX() + 5 >= width) {
-                    character.setX(5);   /* spawn character on other side of map,
-                                       needs to have enough space so
-                                       the character doesn't clip out*/
-                }
-                character.setX(character.getX() + 5);
-            }
-
-            /*Movement to the  Left */
-
-            if (e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT) {
-                if (character.getX() - 5 <= 0) {
-                    character.setX(width - character.getWidth());/* spawn character on other side of map,
-                                                          needs to have enough space so
-                                                          the character doesn't clip out*/
-                }
-                character.setX(character.getX() - 5);
-            }
-            /*Movement Down */
-            if (e.getCode() == KeyCode.S || e.getCode() == KeyCode.DOWN) {
-                if (character.getY() + 5 >= height) {
-                    character.setY(5);                   /* spawn character on other side of map,
-                                                       needs to have enough space so
-                                                       the character doesn't clip out*/
-                }
-                character.setY(character.getY() + 5);
-            }
-        });
+//
+//        /* General Movement Of Character */
+//        scene.setOnKeyPressed(e -> {
+//
+//            /* Movement Up */
+//            if (e.getCode() == KeyCode.W || e.getCode() == KeyCode.UP) {
+//                if (character.getY() - 5 <= 0) {
+//                    character.setY(height - character.getHeight());  /* spawn character on other side of map,
+//                                                              needs to have enough space so
+//                                                              the character doesn't clip out*/
+//                }
+//
+//                character.setY(character.getY() - 5);
+//            }
+//            /* Movement to the Right */
+//            if (e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT) {
+//                if (character.getX() + 5 >= width) {
+//                    character.setX(5);   /* spawn character on other side of map,
+//                                       needs to have enough space so
+//                                       the character doesn't clip out*/
+//                }
+//                character.setX(character.getX() + 5);
+//            }
+//
+//            /*Movement to the  Left */
+//
+//            if (e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT) {
+//                if (character.getX() - 5 <= 0) {
+//                    character.setX(width - character.getWidth());/* spawn character on other side of map,
+//                                                          needs to have enough space so
+//                                                          the character doesn't clip out*/
+//                }
+//                character.setX(character.getX() - 5);
+//            }
+//            /*Movement Down */
+//            if (e.getCode() == KeyCode.S || e.getCode() == KeyCode.DOWN) {
+//                if (character.getY() + 5 >= height) {
+//                    character.setY(5);                   /* spawn character on other side of map,
+//                                                       needs to have enough space so
+//                                                       the character doesn't clip out*/
+//                }
+//                character.setY(character.getY() + 5);
+//            }
+//        });
         stage.show();
     }
 
@@ -107,7 +108,7 @@ public class GameGUI {
     private static void displayBoulder(int i, int j, Boulder obstacle, AnchorPane root) {
         int x = translatePositionCoordinateIntoGUI(i);
         int y = translatePositionCoordinateIntoGUI(j);
-        Rectangle boulder = new Rectangle(x, y, 5, 5);  // TODO: 11/26/2020  this needs to be the turret (pic)
+        Rectangle boulder = new Rectangle(x, y, 5, 5);  // TODO: 11/26/2020  this needs to be the boulder (pic)
         boulder.setFill(Color.DARKGRAY);
         root.getChildren().add(boulder);
     }

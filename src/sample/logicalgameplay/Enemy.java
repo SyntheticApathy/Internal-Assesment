@@ -7,14 +7,13 @@ import sample.logicalmap.Position;
 import java.util.*;
 
 public class Enemy {
-    private List<Pair<Integer, Integer>> path;
     private int currentPosition;
 
     private Set<DijkstraNode> unsettledNodes = new HashSet<>();
     private DijkstraNode[][] allNodes;
 
     private List<Pair<Integer,Integer>> enemyPath;
-
+    private final DijkstraNode targetNode;
 
 
     public Enemy(LogicalMap logicalMap, Pair<Integer, Integer> initialPosition) {
@@ -29,29 +28,53 @@ public class Enemy {
             }
         }
 
+        targetNode = allNodes[logicalMap.getMiddle().getKey()][logicalMap.getMiddle().getValue()];
+
+        //initialize start node with 0 distance and make it first unsettled
         DijkstraNode initialDijkstraNode = allNodes[initialPosition.getKey()][initialPosition.getValue()];
         initialDijkstraNode.setDistance(0);
         unsettledNodes.add(initialDijkstraNode);
-        DijkstraNode targetNode = allNodes[logicalMap.getMiddle().getKey()][logicalMap.getMiddle().getValue()];
+
         while(!unsettledNodes.isEmpty()) {
-            DijkstraNode node = chooseNodeWithLowestDistance();
+            DijkstraNode node = chooseUnsettledNodeWithLowestDistance();
             Set<DijkstraNode> adjacentNodes = findAdjacentNodes(node, logicalMap);
             for (DijkstraNode adjacentNode : adjacentNodes) {
                 if(adjacentNode.isSettled()) {
-                    continue;
+                    continue; //ignore settled nodes
                 }
-//                updateAdjacentNode(node /*fromNode*/);
+                updateAdjacentNode(node /*fromNode*/, adjacentNode);
                 unsettledNodes.add(adjacentNode);
             }
-//            settleNode(node);
+            settleNode(node);
 
             if(node.equals(targetNode)) break;
         }
 
-        enemyPath = targetNode.getShortestPath();
+
+        List<Pair<Integer, Integer>> shortestPath = targetNode.getShortestPath();
+        shortestPath.add(new Pair<>(targetNode.getX(), targetNode.getY()));
+        enemyPath = shortestPath;
     }
 
-    private Set<DijkstraNode> findAdjacentNodes(DijkstraNode node, LogicalMap logicalMap) {
+    public List<Pair<Integer, Integer>> getEnemyPath() {
+        return enemyPath;
+    }
+
+    private void settleNode(DijkstraNode node) {
+        node.setSettled(true);
+        unsettledNodes.remove(node);
+    }
+
+    private void updateAdjacentNode(DijkstraNode fromNode, DijkstraNode adjacentNode) {
+        if(adjacentNode.getDistance() > fromNode.getDistance() + 1) {
+            adjacentNode.setDistance(fromNode.getDistance() + 1);
+            List<Pair<Integer, Integer>> adjacentNodeShortestPath = adjacentNode.getShortestPath();
+            adjacentNodeShortestPath.addAll(fromNode.getShortestPath());
+            adjacentNodeShortestPath.add(new Pair<>(fromNode.getX(), fromNode.getY()));
+        }
+    }
+
+    protected Set<DijkstraNode> findAdjacentNodes(DijkstraNode node, LogicalMap logicalMap) {
         int x = node.getX();
         int y = node.getY();
         Position[][] positions = logicalMap.getPositions();
@@ -88,7 +111,7 @@ public class Enemy {
         return adjacentNodes;
     }
 
-    private DijkstraNode chooseNodeWithLowestDistance() {
+    protected DijkstraNode chooseUnsettledNodeWithLowestDistance() {
         DijkstraNode found = null;
         assert ! unsettledNodes.isEmpty();
         for (DijkstraNode node : unsettledNodes) {
@@ -136,6 +159,10 @@ class DijkstraNode {
         return y;
     }
 
+    public void setSettled(boolean settled) {
+        this.settled = settled;
+    }
+
     public boolean isSettled() {
         return settled;
     }
@@ -154,4 +181,14 @@ class DijkstraNode {
         return Objects.hash(x, y);
     }
 
+    @Override
+    public String toString() {
+        return "DijkstraNode{" +
+                "distance=" + distance +
+                ", shortestPath=" + shortestPath +
+                ", x=" + x +
+                ", y=" + y +
+                ", settled=" + settled +
+                '}';
+    }
 }

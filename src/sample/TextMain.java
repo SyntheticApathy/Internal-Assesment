@@ -9,7 +9,8 @@ public class TextMain {
         int height = 5;
         int numberOfTrees = 11;
         int numberOfBoulders = 2;
-        LogicalMap lm = new LogicalMapCreator().createLogicalMap(numberOfTrees, numberOfBoulders, width, height);
+        int numberOfEnemies = 3;
+        LogicalMap lm = new LogicalMapCreator().createLogicalMap(numberOfTrees, numberOfBoulders,numberOfEnemies, width, height);
         System.out.println(lm);
     }
 }
