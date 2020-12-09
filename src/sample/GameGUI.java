@@ -1,10 +1,12 @@
 package sample;
 
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import sample.logicalgameplay.Game;
 import sample.logicalmap.*;
 
 
@@ -16,6 +18,7 @@ public class GameGUI {
         Stage stage = new Stage();
         AnchorPane root = new AnchorPane();
         Scene scene = new Scene(root, width, height);
+        stage.setScene(scene);
 
 
 
@@ -23,22 +26,22 @@ public class GameGUI {
         /* Adding Character */
         // TODO: 11/24/2020 add character
         Rectangle character = new Rectangle(width / 2, height / 2, 5, 5);
-        character.setFill(Color.RED);
+        character.setFill(Color.BLUE);
         root.getChildren().add(character);
 
 
-        /* Adding Trees / Boulder / Enemies (testing) onto GUI from Logical Map */
-        int numberOfEnemies = 10; // TODO: 12/6/2020 change this so that it depends on what round it is in, this is just a quick switch
+        /* Adding Trees / Boulder / Enemies onto GUI from Logical Map */
+        int numberOfEnemies = 100; // TODO: 12/6/2020 change this so that it depends on what round it is in, this is just a quick switch
         LogicalMap lm = new LogicalMapCreator().createLogicalMap(numberOfTrees, numberOfBoulders, numberOfEnemies, width / 5, height / 5);
 
         Position[][] positions = lm.getPositions();
         for (int i = 0; i < positions.length; i++) {
             for (int j = 0; j < positions[i].length; j++) {
                 displayPosition(i, j, positions[i][j], root);
+                displayEnemy(i, j, positions[i][j], root);
             }
         }
 
-        stage.setScene(scene);
 //
 //        /* General Movement Of Character */
 //        scene.setOnKeyPressed(e -> {
@@ -83,7 +86,32 @@ public class GameGUI {
 //                character.setY(character.getY() + 5);
 //            }
 //        });
+
+        scene.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER){
+                Game.moveEnemiesByOne(lm);
+                for (int i = 0; i < positions.length; i++) {
+                    for (int j = 0; j < positions[i].length; j++) {
+                        displayPosition(i, j, positions[i][j], root);
+                        displayEnemy(i, j, positions[i][j], root);
+                    }
+                }
+            }
+        });
+
+
         stage.show();
+
+    }
+
+    private static void displayEnemy(int i, int j, Position position, AnchorPane root) {
+        if (position.hasEnemy()) {
+            int x = translatePositionCoordinateIntoGUI(i);
+            int y = translatePositionCoordinateIntoGUI(j);
+            Rectangle enemyRectangle = new Rectangle(x, y, 5, 5);
+            enemyRectangle.setFill(Color.RED);
+            root.getChildren().add(enemyRectangle);
+        }
     }
 
     private static void displayPosition(int i, int j, Position position, AnchorPane root) {

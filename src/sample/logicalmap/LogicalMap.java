@@ -1,10 +1,16 @@
 package sample.logicalmap;
 
 import javafx.util.Pair;
+import sample.logicalgameplay.Enemy;
+
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class LogicalMap {
     private int width;
     private int height;
+    private Set<Enemy> enemies = new LinkedHashSet<>();
 
 
     private Position[][] positions;
@@ -36,6 +42,14 @@ public class LogicalMap {
         return new Pair<>(width / 2, height / 2);
     }
 
+    public void addEnemy(Enemy enemy) {
+        enemies.add(enemy);
+    }
+
+    public Set<Enemy> getEnemies() {
+        return enemies;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -47,5 +61,7 @@ public class LogicalMap {
         }
         return sb.toString();
     }
+
+
 }
 

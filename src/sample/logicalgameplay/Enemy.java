@@ -17,6 +17,7 @@ public class Enemy {
 
 
     public Enemy(LogicalMap logicalMap, Pair<Integer, Integer> initialPosition) {
+        logicalMap.addEnemy(this);
         /* calculate path using Dijkstra
           based on https://www.baeldung.com/java-dijkstra */
 
@@ -54,6 +55,21 @@ public class Enemy {
         List<Pair<Integer, Integer>> shortestPath = targetNode.getShortestPath();
         shortestPath.add(new Pair<>(targetNode.getX(), targetNode.getY()));
         enemyPath = shortestPath;
+    }
+
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
+    public void moveByOne() {
+        currentPosition++;
+        Pair<Integer, Integer> targetPosition = new Pair<>(targetNode.getX(), targetNode.getY());
+        if (enemyPath.get(currentPosition).equals(targetPosition)) {
+            System.out.println("You lost :-(");
+            //enemy reached target, you lost
+            //return something or exception
+            throw new RuntimeException("BOOM");
+        }
     }
 
     public List<Pair<Integer, Integer>> getEnemyPath() {

@@ -4,6 +4,7 @@ import sample.logicalgameplay.Enemy;
 
 public class Position {
     private Obstacle obstacle;
+    private Enemy enemy;
 
     public Obstacle getObstacle() {
         return obstacle;
@@ -18,8 +19,19 @@ public class Position {
     }
 
     public void setEnemy(Enemy enemy) {
-        // TODO: 12/6/2020 this i guess idk 
-            
+        if (!hasEnemy()){
+            this.enemy = enemy;
+        } else {
+            //do nothing
+        }
+    }
+
+    public void removeEnemy() {
+        enemy = null;
+    }
+
+    public boolean hasEnemy() {
+        return enemy != null;
     }
 
 
@@ -38,4 +50,7 @@ public class Position {
 
     }
 
+    public Enemy getEnemy() {
+        return enemy;
+    }
 }
