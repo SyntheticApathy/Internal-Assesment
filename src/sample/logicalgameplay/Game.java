@@ -4,8 +4,6 @@ import javafx.util.Pair;
 import sample.logicalmap.LogicalMap;
 import sample.logicalmap.Position;
 
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Game {
@@ -23,6 +21,9 @@ public class Game {
         for (Enemy enemy : enemies) {
             Position oldPosition = getEnemiesPosition(enemy, logicalMap);
             enemy.moveByOne();
+            // TODO: 12/11/2020 fix this lol
+//            oldPosition.getEnemy().moveByOne();
+
             Position newPosition = getEnemiesPosition(enemy, logicalMap);
             oldPosition.removeEnemy();
             newPosition.setEnemy(enemy);
