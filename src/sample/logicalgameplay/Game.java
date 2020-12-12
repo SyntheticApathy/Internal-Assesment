@@ -21,9 +21,6 @@ public class Game {
         for (Enemy enemy : enemies) {
             Position oldPosition = getEnemiesPosition(enemy, logicalMap);
             enemy.moveByOne();
-            // TODO: 12/11/2020 fix this lol
-//            oldPosition.getEnemy().moveByOne();
-
             Position newPosition = getEnemiesPosition(enemy, logicalMap);
             oldPosition.removeEnemy();
             newPosition.setEnemy(enemy);

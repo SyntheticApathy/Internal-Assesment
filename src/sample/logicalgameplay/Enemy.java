@@ -67,8 +67,7 @@ public class Enemy {
         if (enemyPath.get(currentPosition).equals(targetPosition)) {
             System.out.println("You lost :-(");
             //enemy reached target, you lost
-            //return something or exception
-            throw new RuntimeException("BOOM");
+
         }
     }
 

@@ -88,7 +88,7 @@ public class GameGUI {
 //        });
 
         scene.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER){
+            if (e.getCode() == KeyCode.ENTER) {
                 Game.moveEnemiesByOne(lm);
                 for (int i = 0; i < positions.length; i++) {
                     for (int j = 0; j < positions[i].length; j++) {
@@ -105,12 +105,17 @@ public class GameGUI {
     }
 
     private static void displayEnemy(int i, int j, Position position, AnchorPane root) {
+        int x = translatePositionCoordinateIntoGUI(i);
+        int y = translatePositionCoordinateIntoGUI(j);
         if (position.hasEnemy()) {
-            int x = translatePositionCoordinateIntoGUI(i);
-            int y = translatePositionCoordinateIntoGUI(j);
             Rectangle enemyRectangle = new Rectangle(x, y, 5, 5);
             enemyRectangle.setFill(Color.RED);
             root.getChildren().add(enemyRectangle);
+        } else if (position.hasEnemyShadow()) {
+            Rectangle test = new Rectangle(x, y, 5, 5);
+            test.setFill(Color.WHITESMOKE);
+            root.getChildren().add(test);
+            position.removeEnemyShadow();
         }
     }
 
@@ -118,9 +123,8 @@ public class GameGUI {
         if (position.hasObstacle()) {
             Obstacle obstacle = position.getObstacle();
             displayObstacle(i, j, obstacle, root);
-        } else {
-            //do nothing
         }
+
     }
 
     private static void displayObstacle(int i, int j, Obstacle obstacle, AnchorPane root) {

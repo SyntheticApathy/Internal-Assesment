@@ -5,6 +5,7 @@ import sample.logicalgameplay.Enemy;
 public class Position {
     private Obstacle obstacle;
     private Enemy enemy;
+    private boolean enemyShadow;
 
     public Obstacle getObstacle() {
         return obstacle;
@@ -19,7 +20,7 @@ public class Position {
     }
 
     public void setEnemy(Enemy enemy) {
-        if (!hasEnemy()){
+        if (!hasEnemy()) {
             this.enemy = enemy;
         } else {
             //do nothing
@@ -27,11 +28,25 @@ public class Position {
     }
 
     public void removeEnemy() {
+        enemyShadow = true;
         enemy = null;
+    }
+
+    public void removeEnemyShadow() {
+        enemyShadow = false;
+    }
+
+    public boolean hasEnemyShadow() {
+        return enemyShadow;
     }
 
     public boolean hasEnemy() {
         return enemy != null;
+    }
+
+    public boolean hasCharacter() {
+        //TODO
+        return false;
     }
 
 

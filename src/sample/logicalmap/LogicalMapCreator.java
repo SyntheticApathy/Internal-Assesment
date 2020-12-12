@@ -84,8 +84,6 @@ public class LogicalMapCreator {
             int x = ThreadLocalRandom.current().nextInt(0, (width / 20));
             int y = ThreadLocalRandom.current().nextInt(0, height);
 
-            System.out.println("coordinates left : " + x + "," + y);
-
             coordinates.add(new Pair<>(x, y));
 
         }
@@ -94,8 +92,6 @@ public class LogicalMapCreator {
             int x = ThreadLocalRandom.current().nextInt(width - (width / 20), width);
             int y = ThreadLocalRandom.current().nextInt(0, height);
 
-            System.out.println("coordinates right : " + x + "," + y);
-
             coordinates.add(new Pair<>(x, y));
         }
         /* spawn enemy on the top of map */
@@ -103,16 +99,12 @@ public class LogicalMapCreator {
             int x = ThreadLocalRandom.current().nextInt(0, width);
             int y = ThreadLocalRandom.current().nextInt(0, (height / 20));
 
-            System.out.println("coordinates top : " + x + "," + y);
-
             coordinates.add(new Pair<>(x, y));
         }
         /*  spawn enemy on the bottom of the map */
         while (coordinates.size() >= ((number / 4) * 3) && coordinates.size() < number) {
             int x = ThreadLocalRandom.current().nextInt(0, width);
             int y = ThreadLocalRandom.current().nextInt(height - (height / 20), height);
-
-            System.out.println("coordinates bottom : " + x + "," + y);
 
             coordinates.add(new Pair<>(x, y));
         }
