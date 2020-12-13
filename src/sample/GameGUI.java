@@ -1,24 +1,35 @@
 package sample;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import sample.logicalgameplay.FiringLine;
 import sample.logicalgameplay.Game;
+import sample.logicalgameplay.TurretShooting;
 import sample.logicalmap.*;
+
+import java.util.Set;
 
 
 public class GameGUI {
     final static int width = 600;
     final static int height = 400;
+    private static int flag;
 
     public static void init(int numberOfTrees, int numberOfBoulders) {
         Stage stage = new Stage();
         AnchorPane root = new AnchorPane();
         Scene scene = new Scene(root, width, height);
         stage.setScene(scene);
+        stage.setResizable(false);
 
 
 
@@ -31,7 +42,7 @@ public class GameGUI {
 
 
         /* Adding Trees / Boulder / Enemies onto GUI from Logical Map */
-        int numberOfEnemies = 100; // TODO: 12/6/2020 change this so that it depends on what round it is in, this is just a quick switch
+        int numberOfEnemies = 50; // TODO: 12/6/2020 change this so that it depends on what round it is in, this is just a quick switch
         LogicalMap lm = new LogicalMapCreator().createLogicalMap(numberOfTrees, numberOfBoulders, numberOfEnemies, width / 5, height / 5);
 
         Position[][] positions = lm.getPositions();
@@ -87,8 +98,10 @@ public class GameGUI {
 //            }
 //        });
 
+
         scene.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER) {
+
+            Timeline tl = new Timeline(new KeyFrame(Duration.millis(50), event -> {
                 Game.moveEnemiesByOne(lm);
                 for (int i = 0; i < positions.length; i++) {
                     for (int j = 0; j < positions[i].length; j++) {
@@ -96,6 +109,11 @@ public class GameGUI {
                         displayEnemy(i, j, positions[i][j], root);
                     }
                 }
+                shootEnemy(lm, root);
+            }));
+            tl.setCycleCount(Animation.INDEFINITE);
+            if (e.getCode() == KeyCode.SPACE) {
+                tl.play();
             }
         });
 
@@ -103,6 +121,31 @@ public class GameGUI {
         stage.show();
 
     }
+
+
+
+    private static void shootEnemy(LogicalMap lm, AnchorPane root) {
+        Set<FiringLine> firingLines = new TurretShooting(lm).fireTurrets();
+        for (FiringLine firingLine : firingLines) {
+            displayFiringLine(firingLine, root);
+        }
+    }
+
+    private static void displayFiringLine(FiringLine firingLine, AnchorPane root) {
+        int logicalStartX = firingLine.getTurretCoordinate().getKey();
+        int logicalStartY = firingLine.getTurretCoordinate().getValue();
+        int logicalEndX = firingLine.getEnemyCoordinate().getKey();
+        int logicalEndY = firingLine.getEnemyCoordinate().getValue();
+        int startX = translatePositionCoordinateIntoGUI(logicalStartX);
+        int startY = translatePositionCoordinateIntoGUI(logicalStartY);
+        int endX = translatePositionCoordinateIntoGUI(logicalEndX);
+        int endY = translatePositionCoordinateIntoGUI(logicalEndY);
+
+        Line line = new Line(startX, startY, endX, endY);
+        line.setStroke(Color.GREEN);
+        root.getChildren().add(line);
+    }
+
 
     private static void displayEnemy(int i, int j, Position position, AnchorPane root) {
         int x = translatePositionCoordinateIntoGUI(i);
@@ -164,6 +207,5 @@ public class GameGUI {
     private static int translatePositionCoordinateIntoGUI(int i) {
         return i * 5;
     }
-
 
 }

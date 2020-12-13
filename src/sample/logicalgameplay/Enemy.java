@@ -8,6 +8,7 @@ import java.util.*;
 
 public class Enemy {
     private int currentPosition;
+    private boolean isDead;
 
     private Set<DijkstraNode> unsettledNodes = new HashSet<>();
     private DijkstraNode[][] allNodes;
@@ -62,13 +63,26 @@ public class Enemy {
     }
 
     public void moveByOne() {
+        if(isDead) {
+            return;
+        }
         currentPosition++;
         Pair<Integer, Integer> targetPosition = new Pair<>(targetNode.getX(), targetNode.getY());
         if (enemyPath.get(currentPosition).equals(targetPosition)) {
             System.out.println("You lost :-(");
-            //enemy reached target, you lost
-
         }
+    }
+
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public void kill() {
+        isDead = true;
+    }
+
+    public Pair<Integer, Integer> getCurrentCoordinate() {
+        return enemyPath.get(currentPosition);
     }
 
     public List<Pair<Integer, Integer>> getEnemyPath() {
