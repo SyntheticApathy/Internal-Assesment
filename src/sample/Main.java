@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Main extends Application {
 
@@ -74,13 +75,15 @@ public class Main extends Application {
 
         Text numberOfTreesText = new Text("Amount of Trees To Be On Map : ");
         TextField numberOfTreesTextfield = new TextField("Enter Number Here");
+        Button randomTreeButton = new Button("Random");
+
 
         Text numberOfBouldersText = new Text("Amount of Boulders To Be On Map : ");
         TextField numberOfBouldersTextfield = new TextField("Enter Number Here");
+        Button randomBouldersButton = new Button("Random");
 
-
-        Button button = new Button("Create new World");
-        button.setOnAction(event -> {
+        Button startButton = new Button("Create new World");
+        startButton.setOnAction(event -> {
             /* check if Number of Trees && Number of Boulders is valid */
 
             if (numberOfTreesTextfield.getText().isEmpty() || !stringIsInt(numberOfTreesTextfield.getText()) || numberOfBouldersTextfield.getText().isEmpty() || !stringIsInt(numberOfBouldersTextfield.getText())) {
@@ -129,23 +132,45 @@ public class Main extends Application {
                     numberOfTreesTextfield.setText("");
                 } else {
                     GameGUI.init(Integer.parseInt(numberOfTreesTextfield.getText()), Integer.parseInt(numberOfBouldersTextfield.getText()));
+                    GameGUI.sideWindow();
                     stage.close();
                 }
             }
 
         });
-
+        randomTreeButton.setOnAction(event -> {
+            int[] temp = randomNumbers();
+            numberOfTreesTextfield.setText(String.valueOf(temp[0]));
+            numberOfBouldersTextfield.setText(String.valueOf(temp[1]));
+        });
+        randomBouldersButton.setOnAction(event -> {
+            int[] temp = randomNumbers();
+            numberOfTreesTextfield.setText((String.valueOf(temp[0])));
+            numberOfBouldersTextfield.setText(String.valueOf(temp[1]));
+        });
 
 
         root.add(numberOfTreesText, 1, 1);
         root.add(numberOfTreesTextfield, 2, 1);
+        root.add(randomTreeButton, 3, 1);
 
         root.add(numberOfBouldersText, 1, 2);
         root.add(numberOfBouldersTextfield, 2, 2);
+        root.add(randomBouldersButton, 3, 2);
 
-        root.add(button, 5, 5);
+        root.add(startButton, 5, 5);
         stage.setScene(new Scene(root, 1200, 800));
         stage.show();
+    }
+
+    private int[] randomNumbers() {
+       
+        int max = (int) (((GameGUI.height / 5) * (GameGUI.width / 5)) / 4.5);
+        int x = ThreadLocalRandom.current().nextInt(0, max);
+        int y = ThreadLocalRandom.current().nextInt(0, max);
+
+        return x + y <= max ? new int[]{x, y} : randomNumbers();
+
     }
 
 

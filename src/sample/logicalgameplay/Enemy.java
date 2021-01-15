@@ -16,6 +16,13 @@ public class Enemy {
     private List<Pair<Integer,Integer>> enemyPath;
     private final DijkstraNode targetNode;
 
+    @Override
+    public String toString() {
+        return "Enemy{" +
+                "currentPosition=" + currentPosition +
+                ", enemyPath=" + enemyPath +
+                '}';
+    }
 
     public Enemy(LogicalMap logicalMap, Pair<Integer, Integer> initialPosition) {
         logicalMap.addEnemy(this);

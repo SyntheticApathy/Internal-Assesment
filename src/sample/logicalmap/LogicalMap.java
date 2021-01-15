@@ -15,7 +15,7 @@ public class LogicalMap {
 
     private Position[][] positions;
 
-    LogicalMap(int width, int height) {
+    public LogicalMap(int width, int height) {
         this.width = width;
         this.height = height;
         positions = new Position[width][height];
@@ -25,6 +25,12 @@ public class LogicalMap {
             }
         }
     }
+
+    public LogicalMap() {
+
+    }
+
+
 
     public int getWidth() {
         return width;

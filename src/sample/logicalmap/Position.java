@@ -68,4 +68,11 @@ public class Position {
     public Enemy getEnemy() {
         return enemy;
     }
+
+    public boolean hasDeadEnemy() {
+        if (hasEnemy()){
+            return enemy.isDead();
+        }
+        return false;
+    }
 }

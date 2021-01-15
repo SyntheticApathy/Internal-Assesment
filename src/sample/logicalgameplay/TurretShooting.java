@@ -9,7 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class TurretShooting {
-    private static final double TURRET_RANGE = 1;
+    private static final double TURRET_RANGE = 3;
     private final LogicalMap lm;
     private final Set<Pair<Integer, Integer>> turretCoordinates = new LinkedHashSet<>();
 
@@ -32,10 +32,13 @@ public class TurretShooting {
         Set<Enemy> enemies = getAliveEnemies();
         for (Pair<Integer, Integer> turretCoordinate : turretCoordinates) {
             ClosestEnemy closestEnemy = findClosestEnemy(turretCoordinate, enemies);
-            if(closestEnemy != null && closestEnemy.getDistance() <= TURRET_RANGE) {
+            if (closestEnemy != null && closestEnemy.getDistance() <= TURRET_RANGE) {
                 Enemy enemy = closestEnemy.getEnemy();
                 enemy.kill();
                 firingLines.add(new FiringLine(turretCoordinate, enemy.getCurrentCoordinate()));
+                System.out.println(firingLines.toString());
+            } else {
+                // DO NOT FIRE
             }
         }
         return firingLines;
@@ -48,7 +51,7 @@ public class TurretShooting {
         ClosestEnemy closest = null;
         for (Enemy enemy : enemies) {
             double distance = distance(sourceCoordinate, enemy);
-            if(distance < closestDistance) {
+            if (distance < closestDistance) {
                 closestDistance = distance;
                 closest = new ClosestEnemy(distance, enemy);
             }
@@ -62,7 +65,7 @@ public class TurretShooting {
         int xb = targetCoordinate.getKey();
         int ya = sourceCoordinate.getValue();
         int yb = targetCoordinate.getValue();
-        return Math.sqrt((xb-xa)^2 + (yb-ya)^2);
+        return Math.sqrt((xb - xa) ^ 2 + (yb - ya) ^ 2);
     }
 
     private Set<Enemy> getAliveEnemies() {

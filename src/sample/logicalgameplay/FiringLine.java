@@ -19,4 +19,10 @@ public class FiringLine {
         return enemyCoordinate;
     }
 
+    @Override
+    public String toString() {
+        return
+                "turretCoordinate=" + turretCoordinate +
+                ", enemyCoordinate=" + enemyCoordinate;
+    }
 }
