@@ -1,6 +1,7 @@
 package sample.logicalgameplay;
 
 import javafx.util.Pair;
+import sample.GameGUI;
 import sample.logicalmap.LogicalMap;
 import sample.logicalmap.Position;
 
@@ -76,7 +77,7 @@ public class Enemy {
         currentPosition++;
         Pair<Integer, Integer> targetPosition = new Pair<>(targetNode.getX(), targetNode.getY());
         if (enemyPath.get(currentPosition).equals(targetPosition)) {
-            System.out.println("You lost :-(");
+
         }
     }
 

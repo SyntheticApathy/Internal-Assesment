@@ -13,7 +13,7 @@ public class LogicalMapCreator {
     public LogicalMap createLogicalMap(int numberOfTrees, int numberOfBoulders, int numberOfEnemies, int width, int height) {
         LogicalMap logicalMap = new LogicalMap(width, height);
 
-        Set<Pair<Integer, Integer>> turretCoordinates = new HashSet<>() {{
+        Set<Pair<Integer, Integer>> turretCoordinates = new HashSet<Pair<Integer, Integer>>() {{
             double coefficient = 0.45;
             add(new Pair<>((int) Math.round(coefficient * width) - 1, (int) Math.round(coefficient * height) - 1));
             add(new Pair<>((int) Math.round(coefficient * width) - 1, (int) Math.round((1 - coefficient) * height)));

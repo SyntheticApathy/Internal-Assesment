@@ -59,7 +59,6 @@ public class Main extends Application {
     }
 
     private void createNewGameMenu() {
-        final int[] flag = {0};
 
 
         Stage stage = new Stage();
@@ -84,9 +83,10 @@ public class Main extends Application {
 
         Button startButton = new Button("Create new World");
         startButton.setOnAction(event -> {
+
             /* check if Number of Trees && Number of Boulders is valid */
 
-            if (numberOfTreesTextfield.getText().isEmpty() || !stringIsInt(numberOfTreesTextfield.getText()) || numberOfBouldersTextfield.getText().isEmpty() || !stringIsInt(numberOfBouldersTextfield.getText())) {
+            if (numberOfTreesTextfield.getText().isEmpty() || stringIsInt(numberOfTreesTextfield.getText()) || numberOfBouldersTextfield.getText().isEmpty() || stringIsInt(numberOfBouldersTextfield.getText())) {
                 /*  Error Message  */
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Something went wrong");
@@ -125,14 +125,14 @@ public class Main extends Application {
                     Alert tooBigOfANumberAlert = new Alert(Alert.AlertType.ERROR);
                     tooBigOfANumberAlert.setTitle("Number Error");
                     tooBigOfANumberAlert.setHeaderText("The number(s) you entered was too large");
-                    tooBigOfANumberAlert.setContentText("We reccomend entering a smaller number(s)");
+                    tooBigOfANumberAlert.setContentText("We recommend entering a smaller number(s)");
                     tooBigOfANumberAlert.showAndWait();
 
                     numberOfBouldersTextfield.setText("");
                     numberOfTreesTextfield.setText("");
                 } else {
                     GameGUI.init(Integer.parseInt(numberOfTreesTextfield.getText()), Integer.parseInt(numberOfBouldersTextfield.getText()));
-                    GameGUI.sideWindow();
+//                    GameGUI.sideWindow();
                     stage.close();
                 }
             }
@@ -164,7 +164,7 @@ public class Main extends Application {
     }
 
     private int[] randomNumbers() {
-       
+
         int max = (int) (((GameGUI.height / 5) * (GameGUI.width / 5)) / 4.5);
         int x = ThreadLocalRandom.current().nextInt(0, max);
         int y = ThreadLocalRandom.current().nextInt(0, max);
@@ -176,7 +176,7 @@ public class Main extends Application {
 
     private boolean stringIsInt(String str) {
         String regex = "^\\d+$";
-        return str.matches(regex);
+        return !str.matches(regex);
     }
 
 

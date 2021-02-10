@@ -9,7 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class TurretShooting {
-    private static final double TURRET_RANGE = 3;
+    private static final double TURRET_RANGE =  10;
     private final LogicalMap lm;
     private final Set<Pair<Integer, Integer>> turretCoordinates = new LinkedHashSet<>();
 
@@ -65,7 +65,7 @@ public class TurretShooting {
         int xb = targetCoordinate.getKey();
         int ya = sourceCoordinate.getValue();
         int yb = targetCoordinate.getValue();
-        return Math.sqrt((xb - xa) ^ 2 + (yb - ya) ^ 2);
+        return Math.sqrt((xb - xa) * (xb - xa) + (yb - ya) * (yb - ya) );
     }
 
     private Set<Enemy> getAliveEnemies() {

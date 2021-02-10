@@ -7,11 +7,12 @@ import sample.logicalmap.Position;
 import java.util.Set;
 
 public class Game {
+    private static int roundNumber;
     private LogicalMap logicalMap;
     private Set<Pair<Integer, Integer>> turretCoordinates;
     private Set<Enemy> enemies;
 
-    public Game(Set<Enemy> enemies, LogicalMap logicalMap, Set<Pair<Integer, Integer>> turretCoordinates) {
+    public Game(Set<Enemy> enemies, LogicalMap logicalMap, Set<Pair<Integer, Integer>> turretCoordinates, int roundNumber) {
 
 
     }
@@ -32,6 +33,14 @@ public class Game {
         int i = enemy.getCurrentPosition();
         Pair<Integer, Integer> positionPair = enemy.getEnemyPath().get(i);
         return logicalMap.getPositions()[positionPair.getKey()][positionPair.getValue()];
+    }
+
+    public static int getRoundNumber() {
+        return roundNumber;
+    }
+
+    public static void setRoundNumber(int roundNumber) {
+        Game.roundNumber = roundNumber;
     }
 
 }
