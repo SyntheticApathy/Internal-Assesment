@@ -22,6 +22,8 @@ import sample.logicalmap.*;
 
 import java.util.Set;
 
+import static sample.logicalgameplay.Game.getRoundNumber;
+
 
 public class GameGUI {
     final static int width = 600;
@@ -46,7 +48,7 @@ public class GameGUI {
 
         /* Adding Trees / Boulder / Enemies onto GUI from Logical Map */
         Game.setRoundNumber(10);
-        int numberOfEnemies = Game.getRoundNumber() * 10;
+        int numberOfEnemies = getRoundNumber() * 2;
         LogicalMap lm = new LogicalMapCreator().createLogicalMap(numberOfTrees, numberOfBoulders, numberOfEnemies, width / 5, height / 5);
 
         Position[][] positions = lm.getPositions();
@@ -56,28 +58,52 @@ public class GameGUI {
         scene.setOnKeyPressed(e -> {
 
             Timeline tl = new Timeline(new KeyFrame(Duration.millis(50), event -> {
-                if (!isGameLost(lm)) {
+                deleteDeadEnemies(lm);
+                if (!isGameLost(lm) && enemiesOnMap(lm)) {
                     Game.moveEnemiesByOne(lm);
                     iterate(root, positions);
                     if (flag % 5 == 0) {
                         shootEnemy(lm, root);
                     }
                     flag++;
+                    if (!enemiesOnMap(lm)) {
+                        stage.close();
+                        int gamerRound = Game.getRoundNumber();
+                        Game.setRoundNumber(gamerRound++); // TODO: 10/02/2021 this does not work lmao
+                        // TODO: 10/02/2021 next round
+
+                    }
+                    if (isGameLost(lm)) {
+//                    tl.stop(); // TODO: 10/02/2021 fix this
+                        stage.close();
+                        gameLostUI();
+
+                    }
                 }
             }));
-            tl.setCycleCount(Animation.INDEFINITE);
+            tl.setCycleCount(Animation.INDEFINITE); // TODO: 10/02/2021 this is the reason for the tl.stop() bug
             if (e.getCode() == KeyCode.SPACE) {
                 tl.play();
             }
-            if (isGameLost(lm)) {
-                gameLostUI();
-                stage.close();
-            }
+
+
         });
 
 
         stage.show();
 
+    }
+
+    private static void deleteDeadEnemies(LogicalMap lm) {
+        Set<Enemy> enemies = lm.getEnemies();
+        enemies.removeIf(Enemy::isDead);
+    }
+
+    private static boolean enemiesOnMap(LogicalMap lm) {
+        Set<Enemy> enemies = lm.getEnemies();
+        if (enemies.isEmpty()) {
+            return false;
+        } else return true;
     }
 
     private static void gameLostUI() {
@@ -88,7 +114,7 @@ public class GameGUI {
         stage.setScene(scene);
         stage.setResizable(false);
 
-        Text text = new Text("test lmao");
+        Text text = new Text("you lost.");
 
         root.add(text, 0, 0);
 
@@ -97,12 +123,13 @@ public class GameGUI {
 
     private static boolean isGameLost(LogicalMap lm) {
         Set<Enemy> enemies = lm.getEnemies();
-        for (Enemy enemy : enemies) {
-            if (enemy.getCurrentPosition() == enemy.getEnemyPath().size() - 1) {
-                return true;
+        if (!enemies.isEmpty()) {
+            for (Enemy enemy : enemies) {
+                if (enemy.getCurrentPosition() == enemy.getEnemyPath().size() - 1) {
+                    return true;
+                }
             }
         }
-
         return false;
     }
 

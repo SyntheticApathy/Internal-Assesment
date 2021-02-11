@@ -31,7 +31,6 @@ public class LogicalMap {
     }
 
 
-
     public int getWidth() {
         return width;
     }
