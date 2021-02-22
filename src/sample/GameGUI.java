@@ -47,8 +47,8 @@ public class GameGUI {
 
 
         /* Adding Trees / Boulder / Enemies onto GUI from Logical Map */
-        Game.setRoundNumber(10);
-        int numberOfEnemies = getRoundNumber() * 2;
+        Game.setRoundNumber(1);
+        int numberOfEnemies = (getRoundNumber() + 5) * 2;
         LogicalMap lm = new LogicalMapCreator().createLogicalMap(numberOfTrees, numberOfBoulders, numberOfEnemies, width / 5, height / 5);
 
         Position[][] positions = lm.getPositions();
@@ -66,22 +66,21 @@ public class GameGUI {
                         shootEnemy(lm, root);
                     }
                     flag++;
-                    if (!enemiesOnMap(lm)) {
-                        stage.close();
-                        int gamerRound = Game.getRoundNumber();
-                        Game.setRoundNumber(gamerRound++); // TODO: 10/02/2021 this does not work lmao
-                        // TODO: 10/02/2021 next round
-
-                    }
                     if (isGameLost(lm)) {
-//                    tl.stop(); // TODO: 10/02/2021 fix this
+
                         stage.close();
                         gameLostUI();
 
                     }
                 }
+                if (!enemiesOnMap(lm)) {
+                    int gameRound = Game.getRoundNumber();
+                    Game.setRoundNumber(gameRound++);
+                    stage.close();
+                    GameGUI.init(numberOfTrees, numberOfBoulders);
+                }
             }));
-            tl.setCycleCount(Animation.INDEFINITE); // TODO: 10/02/2021 this is the reason for the tl.stop() bug
+            tl.setCycleCount(Animation.INDEFINITE);
             if (e.getCode() == KeyCode.SPACE) {
                 tl.play();
             }
@@ -101,9 +100,7 @@ public class GameGUI {
 
     private static boolean enemiesOnMap(LogicalMap lm) {
         Set<Enemy> enemies = lm.getEnemies();
-        if (enemies.isEmpty()) {
-            return false;
-        } else return true;
+        return !enemies.isEmpty();
     }
 
     private static void gameLostUI() {

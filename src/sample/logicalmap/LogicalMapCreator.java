@@ -33,13 +33,13 @@ public class LogicalMapCreator {
         return logicalMap;
     }
 
-    // TODO: 12/6/2020 putCharacterOnLogicalMap
+
 
 
     public void putTreesOnLogicalMap(Set<Pair<Integer, Integer>> coordinates, LogicalMap logicalMap, Set<Pair<Integer, Integer>> illegalLocations) {
         Position[][] positions = logicalMap.getPositions();
         for (Pair<Integer, Integer> coordinate : coordinates) {
-            if (!illegalLocations.contains(coordinate)) { //change later, move illegalLocations to selectRandomCoordinates
+            if (!illegalLocations.contains(coordinate)) {
                 positions[coordinate.getKey()][coordinate.getValue()].setObstacle(new Tree());
             }
         }
@@ -48,7 +48,7 @@ public class LogicalMapCreator {
     public void putBouldersOnLogicalMap(Set<Pair<Integer, Integer>> coordinates, LogicalMap logicalMap, Set<Pair<Integer, Integer>> illegalLocations) {
         Position[][] positions = logicalMap.getPositions();
         for (Pair<Integer, Integer> coordinate : coordinates) {
-            if (!illegalLocations.contains(coordinate)) { //change later, move illegalLocations to selectRandomCoordinates
+            if (!illegalLocations.contains(coordinate)) {
                 positions[coordinate.getKey()][coordinate.getValue()].setObstacle(new Boulder());
             }
         }

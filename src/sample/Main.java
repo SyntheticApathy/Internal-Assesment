@@ -74,7 +74,6 @@ public class Main extends Application {
 
         Text numberOfTreesText = new Text("Amount of Trees To Be On Map : ");
         TextField numberOfTreesTextfield = new TextField("Enter Number Here");
-        Button randomTreeButton = new Button("Random");
 
 
         Text numberOfBouldersText = new Text("Amount of Boulders To Be On Map : ");
@@ -138,11 +137,7 @@ public class Main extends Application {
             }
 
         });
-        randomTreeButton.setOnAction(event -> {
-            int[] temp = randomNumbers();
-            numberOfTreesTextfield.setText(String.valueOf(temp[0]));
-            numberOfBouldersTextfield.setText(String.valueOf(temp[1]));
-        });
+
         randomBouldersButton.setOnAction(event -> {
             int[] temp = randomNumbers();
             numberOfTreesTextfield.setText((String.valueOf(temp[0])));
@@ -152,11 +147,10 @@ public class Main extends Application {
 
         root.add(numberOfTreesText, 1, 1);
         root.add(numberOfTreesTextfield, 2, 1);
-        root.add(randomTreeButton, 3, 1);
 
         root.add(numberOfBouldersText, 1, 2);
         root.add(numberOfBouldersTextfield, 2, 2);
-        root.add(randomBouldersButton, 3, 2);
+        root.add(randomBouldersButton, 3, 3);
 
         root.add(startButton, 5, 5);
         stage.setScene(new Scene(root, 1200, 800));

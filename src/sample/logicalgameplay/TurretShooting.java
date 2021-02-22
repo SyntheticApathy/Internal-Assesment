@@ -36,7 +36,6 @@ public class TurretShooting {
                 Enemy enemy = closestEnemy.getEnemy();
                 enemy.kill();
                 firingLines.add(new FiringLine(turretCoordinate, enemy.getCurrentCoordinate()));
-                System.out.println(firingLines.toString());
             } else {
                 // DO NOT FIRE
             }
