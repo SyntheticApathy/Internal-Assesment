@@ -20,9 +20,11 @@ import sample.logicalgameplay.Game;
 import sample.logicalgameplay.TurretShooting;
 import sample.logicalmap.*;
 
+import javax.swing.*;
 import java.util.Set;
 
 import static sample.logicalgameplay.Game.getRoundNumber;
+import static sample.logicalgameplay.Game.setRoundNumber;
 
 
 public class GameGUI {
@@ -47,43 +49,72 @@ public class GameGUI {
 
 
         /* Adding Trees / Boulder / Enemies onto GUI from Logical Map */
-        Game.setRoundNumber(1);
-        int numberOfEnemies = (getRoundNumber() + 5) * 2;
+
+        int numberOfEnemies = 10;
         LogicalMap lm = new LogicalMapCreator().createLogicalMap(numberOfTrees, numberOfBoulders, numberOfEnemies, width / 5, height / 5);
 
         Position[][] positions = lm.getPositions();
         iterate(root, positions);
 
 
-        scene.setOnKeyPressed(e -> {
-
-            Timeline tl = new Timeline(new KeyFrame(Duration.millis(50), event -> {
-                deleteDeadEnemies(lm);
-                if (!isGameLost(lm) && enemiesOnMap(lm)) {
-                    Game.moveEnemiesByOne(lm);
-                    iterate(root, positions);
-                    if (flag % 5 == 0) {
-                        shootEnemy(lm, root);
-                    }
-                    flag++;
-                    if (isGameLost(lm)) {
-
-                        stage.close();
-                        gameLostUI();
-
-                    }
+        Timeline tl = new Timeline(new KeyFrame(Duration.millis(50), event -> {
+            deleteDeadEnemies(lm);
+            System.out.println(lm.getEnemies().size());
+            if (!isGameLost(lm) && enemiesOnMap(lm)) {
+                Game.moveEnemiesByOne(lm);
+                iterate(root, positions);
+                if (flag % 5 == 0) {
+                    shootEnemy(lm, root);
                 }
-                if (!enemiesOnMap(lm)) {
-                    int gameRound = Game.getRoundNumber();
-                    Game.setRoundNumber(gameRound++);
+                flag++;
+                if (isGameLost(lm)) {
                     stage.close();
-                    GameGUI.init(numberOfTrees, numberOfBoulders);
+                    gameLostUI();
+
                 }
-            }));
-            tl.setCycleCount(Animation.INDEFINITE);
+            }
+            if (!enemiesOnMap(lm)) {
+                setRoundNumber(getRoundNumber() + 1);
+                stage.close();
+                init(numberOfTrees, numberOfBoulders);
+            }
+        }));
+        tl.setCycleCount(Animation.INDEFINITE);
+
+
+        scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.SPACE) {
                 tl.play();
             }
+
+//            Timeline tl = new Timeline(new KeyFrame(Duration.millis(50), event -> {
+//                deleteDeadEnemies(lm);
+//                if (!isGameLost(lm) && enemiesOnMap(lm)) {
+//                    Game.moveEnemiesByOne(lm);
+//                    iterate(root, positions);
+//                    if (flag % 5 == 0) {
+//                        shootEnemy(lm, root);
+//                    }
+//                    flag++;
+//                    if (isGameLost(lm)) {
+//                        stage.close();
+//                        gameLostUI();
+//
+//                    }
+//                }
+//                if (!enemiesOnMap(lm)) {
+//                  /*  Game.setRoundNumber(Game.getRoundNumber() + 1);
+//                    GameGUI.init(numberOfTrees, numberOfBoulders);*/
+//                    /** next round
+//                     * next round or smth idk
+//                     */
+//                    System.out.println("you won");
+//                }
+//            }));
+//            tl.setCycleCount(Animation.INDEFINITE);
+//            if (e.getCode() == KeyCode.SPACE) {
+//                tl.play();
+//            }
 
 
         });

@@ -29,7 +29,7 @@ public class LogicalMapCreator {
 
         putTreesOnLogicalMap(selectRandomCoordinates(numberOfTrees, width, height), logicalMap, illegalLocations);
         putBouldersOnLogicalMap(selectRandomCoordinates(numberOfBoulders, width, height), logicalMap, illegalLocations);
-        putEnemiesOnLogicalMap(generateEnemyStartingCoordinates(numberOfEnemies, width, height), logicalMap, illegalLocations); // TODO: 12/6/2020 add number of enemies
+        putEnemiesOnLogicalMap(generateEnemyStartingCoordinates(numberOfEnemies, width, height), logicalMap, illegalLocations);
         return logicalMap;
     }
 

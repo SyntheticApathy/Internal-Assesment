@@ -7,7 +7,7 @@ import sample.logicalmap.Position;
 import java.util.Set;
 
 public class Game {
-    private static int roundNumber;
+    private static int roundNumber = 1;
     private LogicalMap logicalMap;
     private Set<Pair<Integer, Integer>> turretCoordinates;
     private Set<Enemy> enemies;
