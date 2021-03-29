@@ -41,6 +41,7 @@ public class GameGUI {
 
 
 
+
         /* Adding Base */
         Rectangle character = new Rectangle(width / 2, height / 2, 5, 5);
         character.setFill(Color.BLUE);
@@ -51,17 +52,44 @@ public class GameGUI {
         int numberOfEnemies = getRoundNumber() * 10;
         LogicalMap lm = new LogicalMapCreator().createLogicalMap(numberOfTrees, numberOfBoulders, numberOfEnemies, width / 5, height / 5);
 
-        /* Displaying Positions and Enemies */
+        /* Getting Positions */
         Position[][] positions = lm.getPositions();
+
+        //object creation hack
+        final int[] amountOfTurretsWhichCanBePlaced = {getRoundNumber()};
+
+        /* Adding additional turrets */
+        root.setOnMouseClicked(e -> {
+
+            /* translating coordinates into positions */
+            int xPosition = (int) e.getSceneX() / 5;
+            int yPosition = (int) e.getSceneY() / 5;
+
+            /* checking if position already has an obstacle */
+            for (int i = 0; i < positions.length; i++) {
+                for (int j = 0; j < positions[i].length; j++) {
+                    if (!positions[xPosition][yPosition].hasObstacle() && amountOfTurretsWhichCanBePlaced[0] > 0) {
+                        lm.addTurret(xPosition, yPosition);
+                        displayTurret(xPosition, yPosition, new Turret(), root);
+                        amountOfTurretsWhichCanBePlaced[0]--;
+                    }
+                }
+            }
+
+        });
+
+
+        /* Displaying Positions and Enemies */
         displayPositionsAndEnemies(root, positions);
 
-
+        /* Commencing GamePlay */
         runTurn(lm, stage, numberOfTrees, numberOfBoulders);
     }
 
     public static void runTurn(LogicalMap lm, Stage stage, int numberOfTrees, int numberOfBoulders) {
         Scene scene = stage.getScene();
         AnchorPane root = (AnchorPane) scene.getRoot();
+        System.out.println(getRoundNumber());
 
         Timeline[] timelines = new Timeline[1]; //object creation hack
         timelines[0] = new Timeline(
