@@ -68,5 +68,10 @@ public class LogicalMap {
     }
 
 
+    public void addTurret(Integer x, Integer y) {
+        Position[][] positions = getPositions();
+        Position p = positions[x][y];
+        p.setObstacle(new Turret());
+    }
 }
 

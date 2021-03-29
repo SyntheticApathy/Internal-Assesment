@@ -55,9 +55,8 @@ public class LogicalMapCreator {
     }
 
     public void putTurretsOnLogicalMap(Set<Pair<Integer, Integer>> coordinates, LogicalMap logicalMap) {
-        Position[][] positions = logicalMap.getPositions();
         for (Pair<Integer, Integer> coordinate : coordinates) {
-            positions[coordinate.getKey()][coordinate.getValue()].setObstacle(new Turret());
+            logicalMap.addTurret(coordinate.getKey(), coordinate.getValue());
         }
     }
 
