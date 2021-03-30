@@ -3,8 +3,10 @@ package sample;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -65,7 +67,7 @@ public class GameGUI {
             int xPosition = (int) e.getSceneX() / 5;
             int yPosition = (int) e.getSceneY() / 5;
 
-            /* checking if position already has an obstacle */
+            /* checking if position already has an obstacle and if the turret can be placed */
             for (int i = 0; i < positions.length; i++) {
                 for (int j = 0; j < positions[i].length; j++) {
                     if (!positions[xPosition][yPosition].hasObstacle() && amountOfTurretsWhichCanBePlaced[0] > 0) {
@@ -89,7 +91,6 @@ public class GameGUI {
     public static void runTurn(LogicalMap lm, Stage stage, int numberOfTrees, int numberOfBoulders) {
         Scene scene = stage.getScene();
         AnchorPane root = (AnchorPane) scene.getRoot();
-        System.out.println(getRoundNumber());
 
         Timeline[] timelines = new Timeline[1]; //object creation hack
         timelines[0] = new Timeline(
@@ -98,7 +99,6 @@ public class GameGUI {
                         event -> {
 
                             deleteDeadEnemies(lm);  // delete enemies killed by turrets from lm
-                            System.out.println(lm.getEnemies().size()); //debugging, delete later
 
                             // if game is still going on
                             if (!isGameLost(lm) && enemiesOnMap(lm)) {
