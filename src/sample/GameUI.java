@@ -156,12 +156,16 @@ public class GameUI {
             // TODO: 31/03/2021 save game
         });
         Button endGame = new Button("Quit");
-
         endGame.setOnAction(event -> System.exit(0));
+
 
         Text enemiesKilledText = new Text();
         Text roundNumber = new Text();
         Text turretsToBePlaced = new Text();
+
+
+        Text infoText = new Text("Press the space bar in order to start the round. \n After all the enemies are defeated, \n press enter to " +
+                "go to the next round");
 
 
         root.add(saveButton, 0, 0);
@@ -170,6 +174,8 @@ public class GameUI {
         root.add(enemiesKilledText, 0, 1);
         root.add(roundNumber, 0, 2);
         root.add(turretsToBePlaced, 0, 3);
+
+        root.add(infoText, 0, 4);
 
         stage.show();
 
