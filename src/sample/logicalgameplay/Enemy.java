@@ -86,6 +86,7 @@ public class Enemy {
     }
 
     public void kill() {
+        GameGUI.enemyKilled(this);
         isDead = true;
     }
 

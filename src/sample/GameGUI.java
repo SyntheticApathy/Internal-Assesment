@@ -3,10 +3,9 @@ package sample;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -31,9 +30,11 @@ public class GameGUI {
     final static int width = 600;
     final static int height = 400;
     static int flag = 0;
+    final static int[] amountOfTurretsWhichCanBePlaced = {getRoundNumber()};
+    private static LogicalMap currentLogicalMap;
+    public static int enemiesKilled;
 
     public static void init(int numberOfTrees, int numberOfBoulders) {
-
         Stage stage = new Stage();
         AnchorPane root = new AnchorPane();
         Scene scene = new Scene(root, width, height);
@@ -53,12 +54,12 @@ public class GameGUI {
         /* Adding Trees / Boulder / Enemies onto GUI from Logical Map */
         int numberOfEnemies = getRoundNumber() * 10;
         LogicalMap lm = new LogicalMapCreator().createLogicalMap(numberOfTrees, numberOfBoulders, numberOfEnemies, width / 5, height / 5);
+        currentLogicalMap = lm;
 
         /* Getting Positions */
         Position[][] positions = lm.getPositions();
 
-        //object creation hack
-        final int[] amountOfTurretsWhichCanBePlaced = {getRoundNumber()};
+        amountOfTurretsWhichCanBePlaced[0] = getRoundNumber();
 
         /* Adding additional turrets */
         root.setOnMouseClicked(e -> {
@@ -67,16 +68,7 @@ public class GameGUI {
             int xPosition = (int) e.getSceneX() / 5;
             int yPosition = (int) e.getSceneY() / 5;
 
-            /* checking if position already has an obstacle and if the turret can be placed */
-            for (int i = 0; i < positions.length; i++) {
-                for (int j = 0; j < positions[i].length; j++) {
-                    if (!positions[xPosition][yPosition].hasObstacle() && amountOfTurretsWhichCanBePlaced[0] > 0) {
-                        lm.addTurret(xPosition, yPosition);
-                        displayTurret(xPosition, yPosition, new Turret(), root);
-                        amountOfTurretsWhichCanBePlaced[0]--;
-                    }
-                }
-            }
+            turretLogic(xPosition, yPosition, positions, lm, root);
 
         });
 
@@ -86,6 +78,19 @@ public class GameGUI {
 
         /* Commencing GamePlay */
         runTurn(lm, stage, numberOfTrees, numberOfBoulders);
+    }
+
+    private static void turretLogic(int xPosition, int yPosition, Position[][] positions, LogicalMap lm, AnchorPane root) {
+        for (int i = 0; i < positions.length; i++) {
+            for (int j = 0; j < positions[i].length; j++) {
+                if (!positions[xPosition][yPosition].hasObstacle() && GameGUI.amountOfTurretsWhichCanBePlaced[0] > 0) {
+                    lm.addTurret(xPosition, yPosition);
+                    displayTurret(xPosition, yPosition, new Turret(), root);
+                    GameGUI.amountOfTurretsWhichCanBePlaced[0]--;
+                    GameGUI.turretPlaced();
+                }
+            }
+        }
     }
 
     public static void runTurn(LogicalMap lm, Stage stage, int numberOfTrees, int numberOfBoulders) {
@@ -122,10 +127,10 @@ public class GameGUI {
                             // if game has been won
                             if (!enemiesOnMap(lm)) {
                                 timelines[0].stop();
-                                setRoundNumber(getRoundNumber() + 1);
                                 scene.setOnKeyPressed(e -> {
                                     if (e.getCode() == KeyCode.ENTER) {
                                         stage.close();
+                                        setRoundNumber(getRoundNumber() + 1);
                                         init(numberOfTrees, numberOfBoulders);
                                     }
                                 });
@@ -139,10 +144,62 @@ public class GameGUI {
             if (e.getCode() == KeyCode.SPACE) {
                 tl.play();
             }
+            if (e.getCode() == KeyCode.ESCAPE) {
+                menuUI(lm);
+            }
         });
 
         stage.show();
     }
+
+    private static void menuUI(LogicalMap lm) {
+        Stage stage = new Stage();
+        GridPane root = new GridPane();
+        Scene scene = new Scene(root, 300, 600);
+        stage.setScene(scene);
+
+        Button saveButton = new Button("Save");
+        saveButton.setOnAction(event -> {
+            //save game
+        });
+        Button endGame = new Button("Quit");
+        endGame.setOnAction(event -> {
+            System.exit(0);
+        });
+
+        Text enemiesKilledText = new Text();
+        Text roundNumber = new Text();
+        Text turretsToBePlaced = new Text();
+
+
+        root.add(saveButton, 0, 0);
+        root.add(endGame, 1, 0);
+
+        root.add(enemiesKilledText, 0, 1);
+        root.add(roundNumber, 0, 2);
+        root.add(turretsToBePlaced, 0, 3);
+
+        stage.show();
+
+
+        MenuUIUpdaterRunnable updater = new MenuUIUpdaterRunnable(enemiesKilledText, turretsToBePlaced, roundNumber);
+        Thread t = new Thread(updater);
+        t.start();
+        stage.setOnCloseRequest(event -> {
+            updater.setShouldRun(false);
+        });
+    }
+
+    public static void turretPlaced() {
+
+    }
+
+    public static void enemyKilled(Enemy e) {
+        if (!e.isDead()) {
+            enemiesKilled++;
+        }
+    }
+
 
     private static void deleteDeadEnemies(LogicalMap lm) {
         Set<Enemy> enemies = lm.getEnemies();
@@ -155,13 +212,6 @@ public class GameGUI {
     }
 
     private static void gameLostUI(LogicalMap lm) {
-        // calculating how many enemies were killed by user
-        int enemiesKilled = 0;
-        for (int i = getRoundNumber() - 1; i > 0; i--) {
-            enemiesKilled += i * 10;
-        }
-        enemiesKilled += getRoundNumber() * 10 - lm.getEnemies().size();
-
 
         Stage stage = new Stage();
         GridPane root = new GridPane();
