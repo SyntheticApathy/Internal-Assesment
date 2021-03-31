@@ -2,7 +2,7 @@ package sample;
 
 import javafx.scene.text.Text;
 
-import static sample.logicalgameplay.Game.getRoundNumber;
+import static sample.logicalgameplay.GameLogic.getRoundNumber;
 
 public class MenuUIUpdaterRunnable implements Runnable {
     private boolean shouldRun = true;
@@ -28,8 +28,8 @@ public class MenuUIUpdaterRunnable implements Runnable {
             } catch (InterruptedException e) {
                 //ignore
             }
-            enemiesKilledText.setText("Enemies killed so far: " + GameGUI.enemiesKilled);
-            turretsToBePlaced.setText(GameGUI.amountOfTurretsWhichCanBePlaced[0] + " turrets can be placed");
+            enemiesKilledText.setText("Enemies killed so far: " + GameUI.enemiesKilled);
+            turretsToBePlaced.setText(GameUI.amountOfTurretsWhichCanBePlaced[0] + " turrets can be placed");
             roundNumber.setText("Round: " + getRoundNumber());
         }
     }

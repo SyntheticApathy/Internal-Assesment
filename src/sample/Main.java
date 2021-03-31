@@ -120,7 +120,7 @@ public class Main extends Application {
                 numberOfBouldersTextfield.setText("");
                 numberOfTreesTextfield.setText("");
             } else {
-                if (Long.parseLong(numberOfTreesTextfield.getText()) + Long.parseLong(numberOfBouldersTextfield.getText()) >= ((GameGUI.height / 5) * (GameGUI.width / 5)) / 4.5) {
+                if (Long.parseLong(numberOfTreesTextfield.getText()) + Long.parseLong(numberOfBouldersTextfield.getText()) >= ((GameUI.height / 5) * (GameUI.width / 5)) / 4.5) {
                     Alert tooBigOfANumberAlert = new Alert(Alert.AlertType.ERROR);
                     tooBigOfANumberAlert.setTitle("Number Error");
                     tooBigOfANumberAlert.setHeaderText("The number(s) you entered was too large");
@@ -130,8 +130,8 @@ public class Main extends Application {
                     numberOfBouldersTextfield.setText("");
                     numberOfTreesTextfield.setText("");
                 } else {
-                    GameGUI.init(Integer.parseInt(numberOfTreesTextfield.getText()), Integer.parseInt(numberOfBouldersTextfield.getText()));
-//                    GameGUI.sideWindow();
+                    GameUI.init(Integer.parseInt(numberOfTreesTextfield.getText()), Integer.parseInt(numberOfBouldersTextfield.getText()));
+                    GameUI.menuUI();
                     stage.close();
                 }
             }
@@ -159,7 +159,7 @@ public class Main extends Application {
 
     private int[] randomNumbers() {
 
-        int max = (int) (((GameGUI.height / 5) * (GameGUI.width / 5)) / 4.5);
+        int max = (int) (((GameUI.height / 5) * (GameUI.width / 5)) / 4.5);
         int x = ThreadLocalRandom.current().nextInt(0, max);
         int y = ThreadLocalRandom.current().nextInt(0, max);
 

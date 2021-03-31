@@ -1,7 +1,7 @@
 package sample.logicalgameplay;
 
 import javafx.util.Pair;
-import sample.GameGUI;
+import sample.GameUI;
 import sample.logicalmap.LogicalMap;
 import sample.logicalmap.Position;
 
@@ -77,7 +77,7 @@ public class Enemy {
         currentPosition++;
         Pair<Integer, Integer> targetPosition = new Pair<>(targetNode.getX(), targetNode.getY());
         if (enemyPath.get(currentPosition).equals(targetPosition)) {
-
+            // do nothing
         }
     }
 
@@ -86,7 +86,7 @@ public class Enemy {
     }
 
     public void kill() {
-        GameGUI.enemyKilled(this);
+        GameUI.enemyKilled(this);
         isDead = true;
     }
 
