@@ -9,11 +9,11 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -41,8 +41,7 @@ public class GameUI {
         Scene scene = new Scene(root, width, height);
         stage.setScene(scene);
         stage.setResizable(false);
-
-
+        stage.setAlwaysOnTop(true);
 
 
 
@@ -148,8 +147,13 @@ public class GameUI {
     public static void menuUI() {
         Stage stage = new Stage();
         GridPane root = new GridPane();
-        Scene scene = new Scene(root, 300, 600);
+        Scene scene = new Scene(root, 300, 400);
         stage.setScene(scene);
+        stage.setResizable(false);
+        stage.setTitle("Menu");
+
+        BackgroundFill bf = new BackgroundFill(Color.PEACHPUFF, CornerRadii.EMPTY, Insets.EMPTY);
+        root.setBackground(new Background(bf));
 
         Button saveButton = new Button("Save");
         saveButton.setOnAction(event -> {
@@ -164,18 +168,22 @@ public class GameUI {
         Text turretsToBePlaced = new Text();
 
 
-        Text infoText = new Text("Press the space bar in order to start the round. \n After all the enemies are defeated, \n press enter to " +
-                "go to the next round");
+        Text infoText = new Text("Press the space bar in order to start the round. \nAfter all the enemies are defeated, \npress enter to " +
+                "go to the next round\n\n\n");
+
+        Text spaceText = new Text("\n\n\n");
+
+        root.add(infoText, 0, 1);
 
 
-        root.add(saveButton, 0, 0);
-        root.add(endGame, 1, 0);
+        root.add(enemiesKilledText, 0, 3);
+        root.add(roundNumber, 0, 4);
+        root.add(turretsToBePlaced, 0, 5);
 
-        root.add(enemiesKilledText, 0, 1);
-        root.add(roundNumber, 0, 2);
-        root.add(turretsToBePlaced, 0, 3);
+        root.add(spaceText, 0, 6);
 
-        root.add(infoText, 0, 4);
+        root.add(saveButton, 0, 7);
+        root.add(endGame, 1, 7);
 
         stage.show();
 
@@ -187,6 +195,7 @@ public class GameUI {
     }
 
     public static void turretPlaced() {
+        //for future development
     }
 
     public static void enemyKilled(Enemy e) {
@@ -204,6 +213,9 @@ public class GameUI {
         stage.setScene(scene);
         stage.setResizable(false);
 
+        BackgroundFill bf = new BackgroundFill(Color.PEACHPUFF, CornerRadii.EMPTY, Insets.EMPTY);
+        root.setBackground(new Background(bf));
+
         /* calculating the amount of enemies which survived */
         int amountOfEnemiesWhichSurvived = 0;
         for (Enemy enemy : lm.getEnemies()) {
@@ -212,13 +224,23 @@ public class GameUI {
             }
         }
 
-        Text text = new Text("you lost.");
-        Text enemiesLeftText = new Text("There were still " + amountOfEnemiesWhichSurvived + " enemies left.");
-        Text enemiesKilledText = new Text("You defeated " + enemiesKilled + " enemies");
+        Text youLostText = new Text("The Enemy has Reached the Base \n\n");
+        youLostText.setFill(Color.BLACK);
+        youLostText.setStyle("-fx-font: 30 arial");
 
-        root.add(text, 0, 0);
-        root.add(enemiesLeftText, 0, 1);
-        root.add(enemiesKilledText, 0, 2);
+        Text enemiesLeftText = new Text("There were still " + amountOfEnemiesWhichSurvived + " enemies left.\n");
+        Text enemiesKilledText = new Text("You defeated " + enemiesKilled + " enemies\n\n");
+
+        Button quitButton = new Button("Quit");
+        quitButton.setOnAction(event -> System.exit(0));
+
+
+        root.add(youLostText, 1, 0);
+        root.add(enemiesLeftText, 1, 1);
+        root.add(enemiesKilledText, 1, 2);
+
+        root.add(quitButton, 1, 4);
+
         stage.show();
     }
 

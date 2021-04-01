@@ -26,7 +26,7 @@ public class MenuUIUpdaterRunnable implements Runnable {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                //ignore
+                //will not happen
             }
             enemiesKilledText.setText("Enemies killed so far: " + GameUI.enemiesKilled);
             turretsToBePlaced.setText(GameUI.amountOfTurretsWhichCanBePlaced[0] + " turrets can be placed");

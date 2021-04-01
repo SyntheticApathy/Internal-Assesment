@@ -58,7 +58,7 @@ public class Main extends Application {
         stage.show();
     }
 
-    private void createNewGameMenu() {
+    static void createNewGameMenu() {
 
 
         Stage stage = new Stage();
@@ -157,7 +157,7 @@ public class Main extends Application {
         stage.show();
     }
 
-    private int[] randomNumbers() {
+    private static int[] randomNumbers() {
 
         int max = (int) (((GameUI.height / 5) * (GameUI.width / 5)) / 4.5);
         int x = ThreadLocalRandom.current().nextInt(0, max);
@@ -168,7 +168,7 @@ public class Main extends Application {
     }
 
 
-    private boolean stringIsInt(String str) {
+    private static boolean stringIsInt(String str) {
         String regex = "^\\d+$";
         return !str.matches(regex);
     }
