@@ -10,7 +10,11 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class LogicalMapCreator {
+    Set<Pair<Integer, Integer>> illegalLocations = new HashSet<>();
+
+    //create LogicalMap normally
     public LogicalMap createLogicalMap(int numberOfTrees, int numberOfBoulders, int numberOfEnemies, int width, int height) {
+
         LogicalMap logicalMap = new LogicalMap(width, height);
 
         Set<Pair<Integer, Integer>> turretCoordinates = new HashSet<Pair<Integer, Integer>>() {{
@@ -23,7 +27,6 @@ public class LogicalMapCreator {
         }};
         putTurretsOnLogicalMap(turretCoordinates, logicalMap);
 
-        Set<Pair<Integer, Integer>> illegalLocations = new HashSet<>();
         illegalLocations.addAll(turretCoordinates);
         illegalLocations.add(logicalMap.getMiddle());
 
@@ -33,8 +36,21 @@ public class LogicalMapCreator {
         return logicalMap;
     }
 
+    //createLogicalMap from database
+    public LogicalMap createLogicalMapFromDatabase(Set<Pair<Integer, Integer>> boulderCoordinates,
+                                                   Set<Pair<Integer, Integer>> treeCoordinates,
+                                                   List<Pair<Integer, Integer>> enemyCoordinates,
+                                                   Set<Pair<Integer, Integer>> turretCoordinates) {
+        LogicalMap logicalMap = new LogicalMap(600, 400);
 
+        putBouldersOnLogicalMap(boulderCoordinates, logicalMap, illegalLocations);
+        putTreesOnLogicalMap(treeCoordinates, logicalMap, illegalLocations);
+        putEnemiesOnLogicalMap(enemyCoordinates, logicalMap, illegalLocations);
+        putTurretsOnLogicalMap(turretCoordinates, logicalMap);
 
+        return logicalMap;
+
+    }
 
     public void putTreesOnLogicalMap(Set<Pair<Integer, Integer>> coordinates, LogicalMap logicalMap, Set<Pair<Integer, Integer>> illegalLocations) {
         Position[][] positions = logicalMap.getPositions();

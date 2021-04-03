@@ -11,7 +11,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -20,17 +23,23 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.Pair;
+import sample.database.GameToGameState;
 import sample.logicalgameplay.Enemy;
 import sample.logicalgameplay.FiringLine;
 import sample.logicalgameplay.GameLogic;
 import sample.logicalmap.*;
 
+import java.util.LinkedHashSet;
+import java.util.Optional;
+import java.util.Set;
+
 import static sample.logicalgameplay.GameLogic.*;
 
 
 public class GameUI {
-    final static int width = 600;
-    final static int height = 400;
+    public final static int width = 600;
+    public final static int height = 400;
     static int flag = 0;
     public final static int[] amountOfTurretsWhichCanBePlaced = {getRoundNumber()};
     public static int enemiesKilled;
@@ -41,7 +50,6 @@ public class GameUI {
         Scene scene = new Scene(root, width, height);
         stage.setScene(scene);
         stage.setResizable(false);
-        stage.setAlwaysOnTop(true);
 
 
 
@@ -136,7 +144,7 @@ public class GameUI {
                 tl.play();
             }
             if (e.getCode() == KeyCode.ESCAPE) {
-                menuUI();
+                menuUI(lm);
             }
         });
 
@@ -144,12 +152,13 @@ public class GameUI {
     }
 
     /* Menu for saving/quitting and for info */
-    public static void menuUI() {
+    public static void menuUI(LogicalMap lm) {
         Stage stage = new Stage();
         GridPane root = new GridPane();
         Scene scene = new Scene(root, 300, 400);
         stage.setScene(scene);
         stage.setResizable(false);
+        stage.setAlwaysOnTop(true);
         stage.setTitle("Menu");
 
         BackgroundFill bf = new BackgroundFill(Color.PEACHPUFF, CornerRadii.EMPTY, Insets.EMPTY);
@@ -157,11 +166,26 @@ public class GameUI {
 
         Button saveButton = new Button("Save");
         saveButton.setOnAction(event -> {
-            // TODO: 31/03/2021 save game
+            GameToGameState.transform(lm, getRoundNumber());
+            System.out.println("game Saved");
         });
         Button endGame = new Button("Quit");
-        endGame.setOnAction(event -> System.exit(0));
+        endGame.setOnAction(event -> {
+            Alert exitAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            exitAlert.setTitle("Exit Confirmation");
+            exitAlert.setContentText("Make sure to save before quitting, if the game is not saved all data will be lost");
 
+
+            Optional<ButtonType> result = exitAlert.showAndWait();
+            if (!result.isPresent()) {
+                // alert is exited, do nothing
+            } else if (result.get() == ButtonType.OK) {
+                System.exit(0);
+            } else if (result.get() == ButtonType.CANCEL) {
+                exitAlert.close();
+            }
+
+        });
 
         Text enemiesKilledText = new Text();
         Text roundNumber = new Text();
@@ -191,7 +215,6 @@ public class GameUI {
         MenuUIUpdaterRunnable updater = new MenuUIUpdaterRunnable(enemiesKilledText, turretsToBePlaced, roundNumber);
         Thread t = new Thread(updater);
         t.start();
-        stage.setOnCloseRequest(event -> updater.setShouldRun(false));
     }
 
     public static void turretPlaced() {
@@ -210,6 +233,7 @@ public class GameUI {
         Stage stage = new Stage();
         GridPane root = new GridPane();
         Scene scene = new Scene(root, width, height);
+        stage.setTitle("End Screen");
         stage.setScene(scene);
         stage.setResizable(false);
 
@@ -234,13 +258,19 @@ public class GameUI {
         Button quitButton = new Button("Quit");
         quitButton.setOnAction(event -> System.exit(0));
 
+        Button retryButton = new Button("Try again");
+        retryButton.setOnAction(event -> {
+            Main.createNewGameMenu();
+
+            stage.close();
+        });
 
         root.add(youLostText, 1, 0);
         root.add(enemiesLeftText, 1, 1);
         root.add(enemiesKilledText, 1, 2);
 
         root.add(quitButton, 1, 4);
-
+        root.add(retryButton, 1, 5);
         stage.show();
     }
 

@@ -1,13 +1,20 @@
 package sample.database;
 
+/**
+ * This method takes the game and prepares it to be transformed and put into the database.
+ * Game -> Database
+ */
+
 import javafx.util.Pair;
 import sample.logicalgameplay.Enemy;
 import sample.logicalmap.*;
 
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class GameToGameState {
+
     public static GameState transform(LogicalMap lm, int roundNumber) {
         Set<Pair<Integer, Integer>> enemyCoordinates = new LinkedHashSet<>();
 
@@ -39,6 +46,10 @@ public class GameToGameState {
                 }
             }
         }
+        System.out.println(" Tree coordinates : " + Arrays.toString(treeCoordinates.toArray()));
+        System.out.println("Boulder coordinates : " + Arrays.toString(boulderCoordinates.toArray()));
+        System.out.println("Turret coordinates : " + Arrays.toString(turretCoordinates.toArray()));
+        System.out.println("Enemies : " + Arrays.toString(enemies.toArray()));
         return new GameState(roundNumber, enemyCoordinates, treeCoordinates, boulderCoordinates, turretCoordinates);
     }
 }

@@ -24,7 +24,7 @@ public class Main extends Application {
 
     }
 
-    private void homeScreen(Stage stage) {
+    private static void homeScreen(Stage stage) {
         GridPane root = new GridPane();
         root.setAlignment(Pos.CENTER);
         root.setVgap(100);
@@ -47,7 +47,8 @@ public class Main extends Application {
 
         Button loadGameButton = new Button("Load Game");
         loadGameButton.setOnAction(e -> {
-            // TODO: 11/26/2020 connect with SQL database and load game
+            loadGameUI();
+            stage.close();
         });
 
         root.add(welcomeText, 2, 0);
@@ -55,6 +56,35 @@ public class Main extends Application {
         root.add(loadGameButton, 3, 1);
 
         stage.setScene(new Scene(root, 1200, 800, Color.RED));
+        stage.show();
+    }
+
+    private static void loadGameUI() {
+        Stage stage = new Stage();
+        stage.setTitle("Load Game");
+
+        GridPane root = new GridPane();
+        root.setAlignment(Pos.CENTER);
+        root.setHgap(20);
+        root.setVgap(10);
+
+        BackgroundFill bf = new BackgroundFill(Color.PEACHPUFF, CornerRadii.EMPTY, Insets.EMPTY);
+        root.setBackground(new Background(bf));
+
+        Button backButton = new Button("Go back");
+        backButton.setOnAction(event -> {
+            homeScreen(stage);
+        });
+
+        //putt all the saves into this scroll pane
+        ScrollPane scrollPane = new ScrollPane();
+
+
+        root.add(backButton, 0, 0);
+
+        root.add(scrollPane, 1, 1);
+
+        stage.setScene(new Scene(root, 1200, 800));
         stage.show();
     }
 
@@ -78,7 +108,12 @@ public class Main extends Application {
 
         Text numberOfBouldersText = new Text("Amount of Boulders To Be On Map : ");
         TextField numberOfBouldersTextfield = new TextField("Enter Number Here");
-        Button randomBouldersButton = new Button("Random");
+        Button randomNumberOfObstacles = new Button("Random");
+
+        Button backButton = new Button("Go back");
+        backButton.setOnAction(event -> {
+            homeScreen(stage);
+        });
 
         Button startButton = new Button("Create new World");
         startButton.setOnAction(event -> {
@@ -120,10 +155,10 @@ public class Main extends Application {
                 numberOfBouldersTextfield.setText("");
                 numberOfTreesTextfield.setText("");
             } else {
-                if (Long.parseLong(numberOfTreesTextfield.getText()) + Long.parseLong(numberOfBouldersTextfield.getText()) >= ((GameUI.height / 5) * (GameUI.width / 5)) / 4.5) {
+                if (Long.parseLong(numberOfTreesTextfield.getText()) + Long.parseLong(numberOfBouldersTextfield.getText()) >= ((GameUI.height / 5) * (GameUI.width / 5)) / 2) {
                     Alert tooBigOfANumberAlert = new Alert(Alert.AlertType.ERROR);
                     tooBigOfANumberAlert.setTitle("Number Error");
-                    tooBigOfANumberAlert.setHeaderText("The number(s) you entered was too large");
+                    tooBigOfANumberAlert.setHeaderText("The sum of the numbers you entered was too large, please enter smaller numbers");
                     tooBigOfANumberAlert.setContentText("We recommend entering a smaller number(s)");
                     tooBigOfANumberAlert.showAndWait();
 
@@ -131,14 +166,13 @@ public class Main extends Application {
                     numberOfTreesTextfield.setText("");
                 } else {
                     GameUI.init(Integer.parseInt(numberOfTreesTextfield.getText()), Integer.parseInt(numberOfBouldersTextfield.getText()));
-                    GameUI.menuUI();
                     stage.close();
                 }
             }
 
         });
 
-        randomBouldersButton.setOnAction(event -> {
+        randomNumberOfObstacles.setOnAction(event -> {
             int[] temp = randomNumbers();
             numberOfTreesTextfield.setText((String.valueOf(temp[0])));
             numberOfBouldersTextfield.setText(String.valueOf(temp[1]));
@@ -150,16 +184,18 @@ public class Main extends Application {
 
         root.add(numberOfBouldersText, 1, 2);
         root.add(numberOfBouldersTextfield, 2, 2);
-        root.add(randomBouldersButton, 3, 3);
+        root.add(randomNumberOfObstacles, 3, 3);
 
         root.add(startButton, 5, 5);
+        root.add(backButton, 1, 5);
+
         stage.setScene(new Scene(root, 1200, 800));
         stage.show();
     }
 
     private static int[] randomNumbers() {
 
-        int max = (int) (((GameUI.height / 5) * (GameUI.width / 5)) / 4.5);
+        int max = (((GameUI.height / 5) * (GameUI.width / 5)) / 2);
         int x = ThreadLocalRandom.current().nextInt(0, max);
         int y = ThreadLocalRandom.current().nextInt(0, max);
 

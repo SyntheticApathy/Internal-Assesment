@@ -15,11 +15,6 @@ import java.util.Set;
 public class GameLogic {
     private static int roundNumber = 1;
 
-    public GameLogic(int roundNumber) {
-
-
-    }
-
     public static int getRoundNumber() {
         return roundNumber;
     }
