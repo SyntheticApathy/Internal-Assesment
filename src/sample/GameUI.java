@@ -7,13 +7,10 @@ package sample;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
@@ -23,24 +20,27 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.util.Pair;
+
+
 import sample.database.GameToGameState;
 import sample.logicalgameplay.Enemy;
 import sample.logicalgameplay.FiringLine;
 import sample.logicalgameplay.GameLogic;
 import sample.logicalmap.*;
 
-import java.util.LinkedHashSet;
+
 import java.util.Optional;
-import java.util.Set;
+
 
 import static sample.logicalgameplay.GameLogic.*;
 
 
 public class GameUI {
+    /* this is the width and height of the game window */
     public final static int width = 600;
     public final static int height = 400;
-    static int flag = 0;
+
+    static int flagForTurretShooting = 0;
     public final static int[] amountOfTurretsWhichCanBePlaced = {getRoundNumber()};
     public static int enemiesKilled;
 
@@ -69,13 +69,12 @@ public class GameUI {
         /* Setting amount of turrets which can be placed each round */
         amountOfTurretsWhichCanBePlaced[0] = getRoundNumber();
 
-        /* Adding additional turrets */
+        /* Adding additional turrets by user on Click*/
         root.setOnMouseClicked(e -> {
 
             /* translating coordinates into positions */
-            int xPosition = (int) e.getSceneX() / 5;
-            int yPosition = (int) e.getSceneY() / 5;
-
+            int xPosition = GameLogic.coordinatesToPosition(e.getSceneX());
+            int yPosition = GameLogic.coordinatesToPosition(e.getSceneY());
             GameLogic.turretLogic(xPosition, yPosition, positions, lm, root);
 
         });
@@ -96,45 +95,42 @@ public class GameUI {
         Timeline[] timelines = new Timeline[1]; //object creation hack
         timelines[0] = new Timeline(
                 new KeyFrame(
-                        Duration.millis(50),
-                        new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent event) {
+                        Duration.millis(50), event -> {
 
-                                GameLogic.deleteDeadEnemies(lm);  // delete enemies killed by turrets from lm
+                    GameLogic.deleteDeadEnemies(lm);  // delete enemies killed by turrets from lm
 
-                                // if game is still going on
-                                if (!GameLogic.isGameLost(lm) && GameLogic.enemiesOnMap(lm)) {
-                                    GameLogic.moveEnemiesByOne(lm);
-                                    displayPositionsAndEnemies(root, lm.getPositions()); // redraw the map each time the enemies move
+                    // if game is still going on
+                    if (!GameLogic.isGameLost(lm) && GameLogic.enemiesOnMap(lm)) {
+                        GameLogic.moveEnemiesByOne(lm);
+                        displayPositionsAndEnemies(root, lm.getPositions()); // redraw the map each time the enemies move
 
-                                    // gameplay mechanics
-                                    if (flag % 5 == 0) {
-                                        GameLogic.shootEnemy(lm, root);
-                                    }
-                                    flag++;
-                                }
+                        /* gameplay mechanics start*/
+                        if (flagForTurretShooting % 5 == 0) {
+                            GameLogic.shootEnemy(lm, root);
+                        }
+                        flagForTurretShooting++;
+                    }
+                    /*gameplay mechanics end */
 
-                                // if game is lost
-                                if (GameLogic.isGameLost(lm)) {
-                                    stage.close();
-                                    timelines[0].stop();
-                                    gameLostUI(lm);
+                    // if game is lost
+                    if (GameLogic.isGameLost(lm)) {
+                        stage.close();
+                        timelines[0].stop();
+                        gameLostUI(lm);
 
-                                }
-                                // if game has been won
-                                if (!GameLogic.enemiesOnMap(lm)) {
-                                    timelines[0].stop();
-                                    scene.setOnKeyPressed(e -> {
-                                        if (e.getCode() == KeyCode.ENTER) {
-                                            stage.close();
-                                            GameLogic.setRoundNumber(getRoundNumber() + 1);
-                                            init(numberOfTrees, numberOfBoulders);
-                                        }
-                                    });
-                                }
+                    }
+                    // if game has been won
+                    if (!GameLogic.enemiesOnMap(lm)) {
+                        timelines[0].stop();
+                        scene.setOnKeyPressed(e -> {
+                            if (e.getCode() == KeyCode.ENTER) {
+                                stage.close();
+                                GameLogic.setRoundNumber(getRoundNumber() + 1);
+                                init(numberOfTrees, numberOfBoulders);
                             }
-                        }));
+                        });
+                    }
+                }));
         Timeline tl = timelines[0];
         tl.setCycleCount(Animation.INDEFINITE);
 
@@ -215,6 +211,11 @@ public class GameUI {
         MenuUIUpdaterRunnable updater = new MenuUIUpdaterRunnable(enemiesKilledText, turretsToBePlaced, roundNumber);
         Thread t = new Thread(updater);
         t.start();
+
+        stage.setOnCloseRequest(event -> {
+            updater.setShouldRun(false);
+        });
+
     }
 
     public static void turretPlaced() {
@@ -310,7 +311,7 @@ public class GameUI {
             root.getChildren().add(enemyRectangle);
         } else if (position.hasEnemyShadow()) {
             Rectangle test = new Rectangle(x, y, 5, 5);
-            test.setFill(Color.WHITESMOKE);
+            test.setFill(Color.PINK);
             root.getChildren().add(test);
             position.removeEnemyShadow();
         }

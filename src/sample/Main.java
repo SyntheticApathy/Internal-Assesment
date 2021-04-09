@@ -21,7 +21,6 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         homeScreen(primaryStage);
 
-
     }
 
     private static void homeScreen(Stage stage) {
@@ -46,7 +45,7 @@ public class Main extends Application {
         });
 
         Button loadGameButton = new Button("Load Game");
-        loadGameButton.setOnAction(e -> {
+        loadGameButton.setOnAction(event -> {
             loadGameUI();
             stage.close();
         });
@@ -120,7 +119,7 @@ public class Main extends Application {
 
             /* check if Number of Trees && Number of Boulders is valid */
 
-            if (numberOfTreesTextfield.getText().isEmpty() || stringIsInt(numberOfTreesTextfield.getText()) || numberOfBouldersTextfield.getText().isEmpty() || stringIsInt(numberOfBouldersTextfield.getText())) {
+            if (numberOfTreesTextfield.getText().isEmpty() || !stringIsInt(numberOfTreesTextfield.getText()) || numberOfBouldersTextfield.getText().isEmpty() || !stringIsInt(numberOfBouldersTextfield.getText())) {
                 /*  Error Message  */
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Something went wrong");
@@ -195,7 +194,7 @@ public class Main extends Application {
 
     private static int[] randomNumbers() {
 
-        int max = (((GameUI.height / 5) * (GameUI.width / 5)) / 2);
+        int max = (((GameUI.height / 5) * (GameUI.width / 5)) / 3);
         int x = ThreadLocalRandom.current().nextInt(0, max);
         int y = ThreadLocalRandom.current().nextInt(0, max);
 
@@ -204,9 +203,9 @@ public class Main extends Application {
     }
 
 
-    private static boolean stringIsInt(String str) {
+    private static boolean stringIsInt(String string) {
         String regex = "^\\d+$";
-        return !str.matches(regex);
+        return string.matches(regex);
     }
 
 

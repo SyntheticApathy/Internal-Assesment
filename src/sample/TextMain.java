@@ -11,6 +11,6 @@ public class TextMain {
         int numberOfBoulders = 2;
         int numberOfEnemies = 3;
         LogicalMap lm = new LogicalMapCreator().createLogicalMap(numberOfTrees, numberOfBoulders,numberOfEnemies, width, height);
-        System.out.println(lm);
+
     }
 }

@@ -87,6 +87,8 @@ public class LogicalMapCreator {
     }
 
     public List<Pair<Integer, Integer>> generateEnemyStartingCoordinates(int number, int width, int height) {
+
+        /* this should not happen */
         if (number < 0) throw new IllegalArgumentException("Invalid number:" + number);
         if (width < 1) throw new IllegalArgumentException("Invalid width:" + width);
         if (height < 1) throw new IllegalArgumentException("Invalid height" + height);

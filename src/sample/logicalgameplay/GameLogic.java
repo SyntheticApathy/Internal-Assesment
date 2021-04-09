@@ -88,4 +88,8 @@ public class GameLogic {
         return i * 5;
     }
 
+    public static int coordinatesToPosition(double n) {
+        return (int) (n / 5);
+    }
+
 }
