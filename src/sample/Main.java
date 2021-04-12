@@ -1,17 +1,23 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import sample.database.Database;
+import sample.database.SQLiteDatabase;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Main extends Application {
@@ -75,13 +81,22 @@ public class Main extends Application {
             homeScreen(stage);
         });
 
+        Database db = new SQLiteDatabase();
+        List<String> saveNames = db.list("Dawid");
         //putt all the saves into this scroll pane
-        ScrollPane scrollPane = new ScrollPane();
+        final ListView lv = new ListView(FXCollections.observableList(saveNames));
+        lv.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
+            @Override
+            public void handle(MouseEvent event) {
+
+                System.out.println("clicked on " + lv.getSelectionModel().getSelectedItem());
+            }
+        });
 
         root.add(backButton, 0, 0);
+        root.add(lv, 0, 1);
 
-        root.add(scrollPane, 1, 1);
 
         stage.setScene(new Scene(root, 1200, 800));
         stage.show();

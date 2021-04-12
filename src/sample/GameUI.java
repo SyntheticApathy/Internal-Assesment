@@ -22,7 +22,10 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
+import sample.database.Database;
+import sample.database.GameState;
 import sample.database.GameToGameState;
+import sample.database.SQLiteDatabase;
 import sample.logicalgameplay.Enemy;
 import sample.logicalgameplay.FiringLine;
 import sample.logicalgameplay.GameLogic;
@@ -162,8 +165,9 @@ public class GameUI {
 
         Button saveButton = new Button("Save");
         saveButton.setOnAction(event -> {
-            GameToGameState.transform(lm, getRoundNumber());
-            System.out.println("game Saved");
+            GameState gameState = GameToGameState.transform(lm, getRoundNumber());
+            Database db = new SQLiteDatabase();
+            db.save("Dawid", "saved game 3", gameState);
         });
         Button endGame = new Button("Quit");
         endGame.setOnAction(event -> {
