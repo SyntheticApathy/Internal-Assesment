@@ -9,9 +9,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -32,6 +30,8 @@ import sample.logicalgameplay.GameLogic;
 import sample.logicalmap.*;
 
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Optional;
 
 
@@ -165,9 +165,8 @@ public class GameUI {
 
         Button saveButton = new Button("Save");
         saveButton.setOnAction(event -> {
-            GameState gameState = GameToGameState.transform(lm, getRoundNumber());
-            Database db = new SQLiteDatabase();
-            db.save("Dawid", "saved game 3", gameState);
+            saveUI(lm);
+
         });
         Button endGame = new Button("Quit");
         endGame.setOnAction(event -> {
@@ -219,6 +218,88 @@ public class GameUI {
         stage.setOnCloseRequest(event -> {
             updater.setShouldRun(false);
         });
+
+    }
+
+    private static void saveUI(LogicalMap lm) {
+        Stage stage = new Stage();
+        GridPane root = new GridPane();
+        Scene scene = new Scene(root, width, height);
+        stage.setTitle("End Screen");
+        stage.setScene(scene);
+        stage.setResizable(false);
+
+        BackgroundFill bf = new BackgroundFill(Color.PEACHPUFF, CornerRadii.EMPTY, Insets.EMPTY);
+        root.setBackground(new Background(bf));
+
+
+        Text enterUserNameText = new Text("Enter the User Name you want to save this game to: ");
+        Text enterSaveNameText = new Text("Enter the Save Name you want to save this game by: ");
+
+
+        TextField enterUserNameTextField = new TextField();
+        TextField enterSaveNameTextField = new TextField();
+
+
+        Button okButton = new Button("Ok");
+
+        okButton.setOnAction(event -> {
+            String userName = null;
+            String saveName = null;
+            if (enterUserNameTextField.getText().isEmpty() || enterSaveNameTextField.getText().isEmpty()) {
+                // alert
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Something went wrong");
+                alert.setContentText("Try again, if this error persists, copy the below error and contact our customer service");
+
+                Exception ex = new IllegalArgumentException("Illegal Argument Exception"); /* This is shown to the client */
+
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                ex.printStackTrace(pw);
+                String exceptiontext = sw.toString();
+
+                Label label = new Label("Error:");
+
+                TextArea textArea = new TextArea(exceptiontext);
+                textArea.setEditable(false);
+                textArea.setWrapText(true);
+
+                textArea.setMaxWidth(Double.MAX_VALUE);
+                textArea.setMaxHeight(Double.MAX_VALUE);
+                GridPane.setVgrow(textArea, Priority.ALWAYS);
+                GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+                GridPane gridPane = new GridPane();
+                gridPane.setMaxWidth(Double.MAX_VALUE);
+                gridPane.add(label, 0, 0);
+                gridPane.add(textArea, 0, 1);
+
+                alert.getDialogPane().setExpandableContent(gridPane);
+                alert.showAndWait();
+
+
+            } else if (!enterSaveNameTextField.getText().isEmpty() && !enterUserNameTextField.getText().isEmpty()) {
+                userName = enterUserNameTextField.getText();
+                saveName = enterSaveNameTextField.getText();
+            }
+            if (userName != null && saveName != null){
+            GameState gameState = GameToGameState.transform(lm, getRoundNumber());
+            Database db = new SQLiteDatabase();
+            db.save(userName, saveName, gameState);
+            stage.close();
+            }
+
+        });
+
+
+        root.add(enterUserNameText, 0, 0);
+        root.add(enterUserNameTextField, 1, 0);
+        root.add(enterSaveNameText, 0, 1);
+        root.add(enterSaveNameTextField, 1, 1);
+        root.add(okButton, 2, 2);
+
+        stage.show();
 
     }
 
@@ -280,7 +361,7 @@ public class GameUI {
     }
 
 
-    private static void displayPositionsAndEnemies(AnchorPane root, Position[][] positions) {
+    public static void displayPositionsAndEnemies(AnchorPane root, Position[][] positions) {
         for (int i = 0; i < positions.length; i++) {
             for (int j = 0; j < positions[i].length; j++) {
                 displayPosition(i, j, positions[i][j], root);

@@ -3,11 +3,11 @@ package sample.logicalmap;
 import javafx.util.Pair;
 import sample.logicalgameplay.Enemy;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static sample.GameUI.height;
+import static sample.GameUI.width;
 
 public class LogicalMapCreator {
     Set<Pair<Integer, Integer>> illegalLocations = new HashSet<>();
@@ -39,13 +39,13 @@ public class LogicalMapCreator {
     //createLogicalMap from database
     public LogicalMap createLogicalMapFromDatabase(Set<Pair<Integer, Integer>> boulderCoordinates,
                                                    Set<Pair<Integer, Integer>> treeCoordinates,
-                                                   List<Pair<Integer, Integer>> enemyCoordinates,
+                                                   Set<Pair<Integer, Integer>> enemyCoordinates,
                                                    Set<Pair<Integer, Integer>> turretCoordinates) {
-        LogicalMap logicalMap = new LogicalMap(600, 400);
+        LogicalMap logicalMap = new LogicalMap(width/5, height/5);
 
-        putBouldersOnLogicalMap(boulderCoordinates, logicalMap, illegalLocations);
-        putTreesOnLogicalMap(treeCoordinates, logicalMap, illegalLocations);
-        putEnemiesOnLogicalMap(enemyCoordinates, logicalMap, illegalLocations);
+        putBouldersOnLogicalMap(boulderCoordinates, logicalMap, Collections.EMPTY_SET);
+        putTreesOnLogicalMap(treeCoordinates, logicalMap, Collections.EMPTY_SET);
+        putEnemiesOnLogicalMap(enemyCoordinates, logicalMap, Collections.EMPTY_SET);
         putTurretsOnLogicalMap(turretCoordinates, logicalMap);
 
         return logicalMap;
@@ -77,7 +77,7 @@ public class LogicalMapCreator {
     }
 
 
-    public void putEnemiesOnLogicalMap(List<Pair<Integer, Integer>> coordinates, LogicalMap logicalMap, Set<Pair<Integer, Integer>> illegalLocations) {
+    public void putEnemiesOnLogicalMap(Set<Pair<Integer, Integer>> coordinates, LogicalMap logicalMap, Set<Pair<Integer, Integer>> illegalLocations) {
         Position[][] positions = logicalMap.getPositions();
         for (Pair<Integer, Integer> coordinate : coordinates) {
             if (!illegalLocations.contains(coordinate)) {
@@ -86,7 +86,7 @@ public class LogicalMapCreator {
         }
     }
 
-    public List<Pair<Integer, Integer>> generateEnemyStartingCoordinates(int number, int width, int height) {
+    public Set<Pair<Integer, Integer>> generateEnemyStartingCoordinates(int number, int width, int height) {
 
         /* this should not happen */
         if (number < 0) throw new IllegalArgumentException("Invalid number:" + number);
@@ -95,7 +95,7 @@ public class LogicalMapCreator {
         if (number > width + height) throw new IllegalArgumentException("number is too big for size");
 
 
-        List<Pair<Integer, Integer>> coordinates = new ArrayList<>();
+        Set<Pair<Integer, Integer>> coordinates = new LinkedHashSet<>();
         /* spawn enemy on left of map */
         while (coordinates.size() < number / 4) {
             int x = ThreadLocalRandom.current().nextInt(0, (width / 20));

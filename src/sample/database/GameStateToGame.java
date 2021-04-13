@@ -1,7 +1,7 @@
 package sample.database;
 
 /**
- *This method loads the info from the database and turns it into the game
+ * This method loads the info from the database and turns it into the game
  * Database -> Game
  */
 
@@ -12,44 +12,39 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import sample.GameUI;
+import sample.logicalgameplay.GameLogic;
 import sample.logicalmap.Boulder;
 import sample.logicalmap.LogicalMap;
 import sample.logicalmap.LogicalMapCreator;
 import sample.logicalmap.Tree;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Set;
 
-import static sample.GameUI.height;
-import static sample.GameUI.width;
+import static sample.GameUI.*;
 
 public class GameStateToGame {
-    Set<Pair<Integer, Integer>> treeCoordinates;
-    Set<Pair<Integer, Integer>> boulderCoordinates;
-    Set<Pair<Integer, Integer>> turretCoordinates;
-    List<Pair<Integer, Integer>> enemyCoordinates;
+    private Set<Pair<Integer, Integer>> treeCoordinates;
+    private Set<Pair<Integer, Integer>> boulderCoordinates;
+    private Set<Pair<Integer, Integer>> turretCoordinates;
+    private Set<Pair<Integer, Integer>> enemyCoordinates;
+    private int roundNumber;
 
-    public GameStateToGame(Set<Pair<Integer, Integer>> treeCoordinates,
-                           Set<Pair<Integer, Integer>> boulderCoordinates,
-                           Set<Pair<Integer, Integer>> turretCoordinates,
-                           List<Pair<Integer, Integer>> enemyCoordinates) {
+    public GameStateToGame(
+            int roundNumber,
+            Set<Pair<Integer, Integer>> treeCoordinates,
+            Set<Pair<Integer, Integer>> boulderCoordinates,
+            Set<Pair<Integer, Integer>> turretCoordinates,
+            Set<Pair<Integer, Integer>> enemyCoordinates) {
+        this.roundNumber = roundNumber;
         this.treeCoordinates = treeCoordinates;
         this.boulderCoordinates = boulderCoordinates;
         this.turretCoordinates = turretCoordinates;
         this.enemyCoordinates = enemyCoordinates;
     }
 
-
-    private static LogicalMap createLogicalMap(Set<Pair<Integer, Integer>> treeCoordinates,
-                                               Set<Pair<Integer, Integer>> boulderCoordinates,
-                                               Set<Pair<Integer, Integer>> turretCoordinates,
-                                               List<Pair<Integer, Integer>> enemyCoordinates) {
-
-        return new LogicalMapCreator().createLogicalMapFromDatabase(boulderCoordinates, treeCoordinates, enemyCoordinates, turretCoordinates);
-    }
-
-    public static void createGame(LogicalMap lm) {
-
+    public void createGame() {
+        LogicalMap lm = new LogicalMapCreator().createLogicalMapFromDatabase(boulderCoordinates, treeCoordinates, enemyCoordinates, turretCoordinates);
         int numberOfTrees = 0;
         int numberOfBoulders = 0;
         for (int i = 0; i < lm.getPositions().length; i++) {
@@ -80,6 +75,11 @@ public class GameStateToGame {
         Rectangle character = new Rectangle(width / 2, height / 2, 5, 5);
         character.setFill(Color.BLUE);
         root.getChildren().add(character);
+
+
+        displayPositionsAndEnemies(root, lm.getPositions());
+
+        GameLogic.setRoundNumber(roundNumber);
 
         GameUI.runTurn(lm, stage, numberOfTrees, numberOfBoulders);
 

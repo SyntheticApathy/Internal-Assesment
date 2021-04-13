@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -60,7 +61,7 @@ public class SQLiteDatabase implements Database {
     }
 
     private void insertCoordinates(Connection conn, String userName, String saveName, int x, int y, String sql) {
-        try (PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+        try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, userName);
             preparedStatement.setString(2, saveName);
             preparedStatement.setInt(3, x);
@@ -84,7 +85,7 @@ public class SQLiteDatabase implements Database {
 
     private void insertGames(Connection conn, String userName, String saveName, int roundNumber) {
         String sql = "INSERT INTO Games(user_name, save_name, round_number) VALUES(?,?,?)";
-        try (PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+        try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, userName);
             preparedStatement.setString(2, saveName);
             preparedStatement.setInt(3, roundNumber);
@@ -101,8 +102,75 @@ public class SQLiteDatabase implements Database {
         Set<Pair<Integer, Integer>> trees = loadTrees(userName, saveName);
         Set<Pair<Integer, Integer>> boulders = loadBoulders(userName, saveName);
         Set<Pair<Integer, Integer>> turrets = loadTurrets(userName, saveName);
-        return new GameState(roundNumber, enemies, trees, boulders, turrets);;
+        return new GameState(roundNumber, enemies, trees, boulders, turrets);
     }
+
+    private Set<Pair<Integer, Integer>> loadTurrets(String userName, String saveName) {
+        String sql = "SELECT x, y FROM Turrets WHERE user_name = ? AND save_name = ?";
+        return getPairSet(userName, saveName, sql);
+    }
+
+
+    private Set<Pair<Integer, Integer>> loadBoulders(String userName, String saveName) {
+        String sql = "SELECT x, y FROM Boulders WHERE user_name = ? AND save_name = ?";
+        return getPairSet(userName, saveName, sql);
+    }
+
+    private Set<Pair<Integer, Integer>> loadTrees(String userName, String saveName) {
+        String sql = "SELECT x, y FROM Trees WHERE user_name = ? AND save_name = ?";
+        return getPairSet(userName, saveName, sql);
+    }
+
+    private Set<Pair<Integer, Integer>> loadEnemies(String userName, String saveName) {
+        String sql = "SELECT x, y FROM Enemies WHERE user_name = ? AND save_name = ?";
+        return getPairSet(userName, saveName, sql);
+    }
+
+    private Set<Pair<Integer, Integer>> getPairSet(String userName, String saveName, String sql) {
+        try (
+                Connection conn = getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql)
+        ) {
+            preparedStatement.setString(1, userName);
+            preparedStatement.setString(2, saveName);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Set<Pair<Integer, Integer>> retval = new LinkedHashSet<>();
+            while (resultSet.next()) {
+                int x = resultSet.getInt(1);
+                int y = resultSet.getInt(2);
+                retval.add(new Pair<>(x, y));
+            }
+            return retval;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private int loadGame(String userName, String saveName) {
+        String sql = "SELECT round_number FROM Games where user_name = ? AND save_name = ?";
+        try (
+                Connection conn = getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql)
+        ) {
+            preparedStatement.setString(1, userName);
+            preparedStatement.setString(2, saveName);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (!resultSet.next()) {
+                throw new IllegalStateException("Couldn't find game for user " + userName + " with name " + saveName);
+            }
+
+            int roundNumber = resultSet.getInt(1);
+
+            if (resultSet.next()) {
+                throw new IllegalStateException("More than one game for user " + userName + " with name " + saveName);
+            }
+            return roundNumber;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     @Override
     public List<String> list(String userName) {
@@ -114,7 +182,7 @@ public class SQLiteDatabase implements Database {
                 PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, userName);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 String saveName = resultSet.getString(1);
                 retVal.add(saveName);
             }

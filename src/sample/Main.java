@@ -13,6 +13,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import sample.database.Database;
+import sample.database.GameState;
+import sample.database.GameStateToGame;
 import sample.database.SQLiteDatabase;
 
 import java.io.PrintWriter;
@@ -21,7 +23,6 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Main extends Application {
-
 
     @Override
     public void start(Stage primaryStage) {
@@ -52,7 +53,7 @@ public class Main extends Application {
 
         Button loadGameButton = new Button("Load Game");
         loadGameButton.setOnAction(event -> {
-            loadGameUI();
+            enterUserNameUI();
             stage.close();
         });
 
@@ -64,7 +65,76 @@ public class Main extends Application {
         stage.show();
     }
 
-    private static void loadGameUI() {
+    private static void enterUserNameUI() {
+        Stage stage = new Stage();
+        stage.setTitle("Load Game");
+
+        GridPane root = new GridPane();
+        root.setAlignment(Pos.CENTER);
+        root.setHgap(20);
+        root.setVgap(10);
+
+        BackgroundFill bf = new BackgroundFill(Color.PEACHPUFF, CornerRadii.EMPTY, Insets.EMPTY);
+        root.setBackground(new Background(bf));
+
+        Text enterUserNameText = new Text("Enter User Name : ");
+        TextField enterUserNameTextField = new TextField();
+
+        Button backButton = new Button("Go back");
+        backButton.setOnAction(event -> {
+            homeScreen(stage);
+            stage.close();
+        });
+        Button loadGameUnderThisUsernameButton = new Button("Load games under this username");
+        loadGameUnderThisUsernameButton.setOnAction(event -> {
+            if (enterUserNameTextField.getText().isEmpty()) {
+                /*  Error Message  */
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Something went wrong");
+                alert.setContentText("Try again, if this error persists, copy the below error and contact our customer service");
+
+                Exception ex = new IllegalArgumentException("Illegal Argument Exception"); /* This is shown to the client */
+
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                ex.printStackTrace(pw);
+                String exceptiontext = sw.toString();
+
+                Label label = new Label("Error:");
+
+                TextArea textArea = new TextArea(exceptiontext);
+                textArea.setEditable(false);
+                textArea.setWrapText(true);
+
+                textArea.setMaxWidth(Double.MAX_VALUE);
+                textArea.setMaxHeight(Double.MAX_VALUE);
+                GridPane.setVgrow(textArea, Priority.ALWAYS);
+                GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+                GridPane gridPane = new GridPane();
+                gridPane.setMaxWidth(Double.MAX_VALUE);
+                gridPane.add(label, 0, 0);
+                gridPane.add(textArea, 0, 1);
+
+                alert.getDialogPane().setExpandableContent(gridPane);
+                alert.showAndWait();
+
+            } else if (!enterUserNameTextField.getText().isEmpty()) {
+                loadGameUI(enterUserNameTextField.getText());
+                stage.close();
+            }
+        });
+
+
+        root.add(enterUserNameText, 0, 0);
+        root.add(enterUserNameTextField, 0, 1);
+        root.add(backButton, 2, 2);
+        root.add(loadGameUnderThisUsernameButton, 2, 1);
+        stage.setScene(new Scene(root, 1200, 800));
+        stage.show();
+    }
+
+    private static void loadGameUI(String userName) {
         Stage stage = new Stage();
         stage.setTitle("Load Game");
 
@@ -78,19 +148,29 @@ public class Main extends Application {
 
         Button backButton = new Button("Go back");
         backButton.setOnAction(event -> {
-            homeScreen(stage);
+            enterUserNameUI();
+            stage.close();
         });
 
         Database db = new SQLiteDatabase();
-        List<String> saveNames = db.list("Dawid");
+        List<String> saveNames = db.list(userName);
         //putt all the saves into this scroll pane
         final ListView lv = new ListView(FXCollections.observableList(saveNames));
         lv.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent event) {
-
-                System.out.println("clicked on " + lv.getSelectionModel().getSelectedItem());
+                Database db = new SQLiteDatabase();
+                String saveName = lv.getSelectionModel().getSelectedItem().toString();
+                GameState gameState = db.load(userName, saveName);
+                GameStateToGame gameStateToGame = new GameStateToGame(
+                        gameState.getRoundNumber(),
+                        gameState.getTrees(),
+                        gameState.getBoulders(),
+                        gameState.getTurrets(),
+                        gameState.getEnemies()
+                );
+                gameStateToGame.createGame();
             }
         });
 

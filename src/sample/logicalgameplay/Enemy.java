@@ -66,10 +66,6 @@ public class Enemy {
         enemyPath = shortestPath;
     }
 
-    public int getCurrentPosition() {
-        return currentPosition;
-    }
-
     public void moveByOne() {
         if(isDead) {
             return;
@@ -79,23 +75,6 @@ public class Enemy {
         if (enemyPath.get(currentPosition).equals(targetPosition)) {
             // do nothing
         }
-    }
-
-    public boolean isDead() {
-        return isDead;
-    }
-
-    public void kill() {
-        GameUI.enemyKilled(this);
-        isDead = true;
-    }
-
-    public Pair<Integer, Integer> getCurrentCoordinate() {
-        return enemyPath.get(currentPosition);
-    }
-
-    public List<Pair<Integer, Integer>> getEnemyPath() {
-        return enemyPath;
     }
 
     private void settleNode(DijkstraNode node) {
@@ -163,8 +142,29 @@ public class Enemy {
         }
         return found;
     }
-}
 
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public void kill() {
+        GameUI.enemyKilled(this);
+        isDead = true;
+    }
+
+    public Pair<Integer, Integer> getCurrentCoordinate() {
+        return enemyPath.get(currentPosition);
+    }
+
+    public List<Pair<Integer, Integer>> getEnemyPath() {
+        return enemyPath;
+    }
+
+}
 class DijkstraNode {
     private int distance = Integer.MAX_VALUE;
     private List<Pair<Integer, Integer>> shortestPath = new ArrayList<>();

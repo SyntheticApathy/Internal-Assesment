@@ -49,7 +49,7 @@ public class GameToGameState {
         System.out.println(" Tree coordinates : " + Arrays.toString(treeCoordinates.toArray()));
         System.out.println("Boulder coordinates : " + Arrays.toString(boulderCoordinates.toArray()));
         System.out.println("Turret coordinates : " + Arrays.toString(turretCoordinates.toArray()));
-        System.out.println("Enemies : " + Arrays.toString(enemies.toArray()));
+        System.out.println("Enemies : " + Arrays.toString(enemyCoordinates.toArray()));
         return new GameState(roundNumber, enemyCoordinates, treeCoordinates, boulderCoordinates, turretCoordinates);
     }
 }
